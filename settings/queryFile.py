@@ -48,3 +48,14 @@ class QueryStringDb(object):
             v_msg_error = 'error select : {error_code}, {error}'.format(
                 error_code=error.pgcode, error=str(error.pgerror))
             return responseJSON(error.pgcode, "F", f"Kode: {error.pgcode}. {error.pgerror}", [])
+
+    def execute_select(self, query, kondisi):
+        try:
+            self.query = query
+            self.kondisi = kondisi
+            self._db_cursor.execute(self.query, self.kondisi)
+            self._db_connection.commit()
+            self._result = rows_to_dict_list(self._db_cursor)
+            return responseJSON(200, "T", "Execute Select Berhasil!", self._result)
+        except psycopg2.Error as e:
+            return responseJSON(200, 'F', f"Kode: {e.pgcode}, Error: {e.pgerror}", None)

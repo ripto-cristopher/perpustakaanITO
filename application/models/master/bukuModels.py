@@ -19,6 +19,7 @@ def getAllBuku():
     return customQuery.select(query, kondisi)
 
 
+
 def insertBuku(idpenerbit, idpengarang, idkategori, nama, tahunterbit):
     customQuery = QueryStringDb()
     query = '''         
@@ -88,9 +89,30 @@ def insertSubBuku(idBuku):
             (idbuku, tanggalmasuk)
         values
             (%(idBuku)s, CURRENT_DATE) 
+        RETURNING id;
             '''
     kondisi = {
         'idBuku': idBuku
     }
-    return customQuery.execute(query, kondisi)
+    return customQuery.execute_select(query, kondisi)
 
+
+def getBuku(id):
+    customQuery = QueryStringDb()
+    query = '''         
+            select 
+                b.id, p.nama as penerbit , p2.nama as pengarang, k.nama as kategori, b.nama, tahunterbit  
+            from 
+                buku b
+            left join penerbit p
+                on b.idpenerbit  = p.id
+            left join pengarang p2  
+                on b.idpengarang = p2.id
+            left join kategori k    
+                on b.idkategori = k.id 
+            where b.id = %(id)s
+            '''
+    kondisi = {
+        'id': id
+    }
+    return customQuery.select(query, kondisi)
