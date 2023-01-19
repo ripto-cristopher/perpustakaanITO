@@ -1,7 +1,7 @@
 from settings.queryFile import QueryStringDb
 
 
-def getAllpengarang():
+def getAllpenulis():
     customQuery = QueryStringDb()
     query = '''         
             SELECT * from pengarang ;
@@ -10,7 +10,7 @@ def getAllpengarang():
     return customQuery.select(query, kondisi)
 
 
-def insertpengarang(nama):
+def insertpenulis(nama):
     customQuery = QueryStringDb()
     query = '''         
         insert into pengarang (nama)
@@ -22,7 +22,7 @@ def insertpengarang(nama):
     return customQuery.execute(query, kondisi)
 
 
-def updatepengarang(id, nama):
+def updatepenulis(id, nama):
     customQuery = QueryStringDb()
     query = '''         
         UPDATE pengarang  SET nama = %(nama)s WHERE id = %(id)s

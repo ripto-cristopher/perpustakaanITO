@@ -4,6 +4,7 @@ from flask import render_template, url_for, request, redirect, flash, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from application.models.authmodels import *
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -11,14 +12,14 @@ def login():
         password = request.form['password']
         reAdmin = selectAdmin(id)
         reUsers = selectUser(id)
-        print (reUsers)
+        print(reUsers)
         if reAdmin['status'] == 'T' and reAdmin['result'] != []:
             if check_password_hash(reAdmin['result'][0]['password'], password):
                 session['loggedin'] = True
                 session['id'] = reAdmin['result'][0]['id']
                 session['admin'] = True
-                # return redirect(url_for('home'))
-                return "anda berhasil login sebagai admin"
+                return redirect(url_for('home'))
+                # return "anda berhasil login sebagai admin"
         elif reUsers['status'] == 'T' and reUsers['result'] != []:
             if check_password_hash(reUsers['result'][0]['password'], password):
                 session['loggedin'] = True
@@ -26,9 +27,9 @@ def login():
                 session['email'] = reUsers['result'][0]['email']
                 session['user'] = True
                 return "anda berhasil login sebagai user"
-        else :
-            return "password atau email salah , danger"
-    return "maaf anda harus login terlebih dahulu"
+        else:
+            flash('wrong password or email', 'danger')
+    return render_template("login.html")
 
 
 @app.route('/register/admin', methods=['GET', 'POST'])
@@ -36,9 +37,9 @@ def registerAdmin():
     if request.method == 'POST':
         id = request.form['id']
         nama = request.form['nama']
-        password = request.form['password'] 
+        password = request.form['password']
         passwordHash = generate_password_hash(password, "sha256")
-        print (passwordHash)
+        print(passwordHash)
         re = insertAdmin(id, nama, passwordHash)
         if re['status'] == 'T':
             # flash('Registration has been successful, please login', 'success')
@@ -60,17 +61,17 @@ def registerAnggota():
         email = request.form['email']
         kategori = request.form['kategori']
         tanggalLahir = request.form['tanggalLahir']
-        print (tanggalLahir)
+        print(tanggalLahir)
         passwordHash = generate_password_hash(tanggalLahir, "sha256")
         print(passwordHash)
         re = insertUser(id, nama, email, tanggalLahir, kategori, passwordHash)
         if re['status'] == 'T':
-        #     # flash('Registration has been successful, please login', 'success')
-        #     # return redirect(url_for('login'))
+            #     # flash('Registration has been successful, please login', 'success')
+            #     # return redirect(url_for('login'))
             return re
         else:
-        #     # flash('Registration failed', 'danger')
-        #     # return "Registration gagal, danger"
+            #     # flash('Registration failed', 'danger')
+            #     # return "Registration gagal, danger"
             return re
     # return render_template("register.html")
     return f"berhasil {id}, {nama}, {passwordHash}"
@@ -95,6 +96,3 @@ def adminLoginRequired(f):
             # return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated_function
-
-
-

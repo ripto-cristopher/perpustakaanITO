@@ -5,7 +5,7 @@ def getAllBuku():
     customQuery = QueryStringDb()
     query = '''         
             select 
-                b.id, p.nama as penerbit , p2.nama as pengarang, k.nama as kategori, b.nama, tahunterbit  
+                b.id, p.nama as penerbit , p2.nama as pengarang, k.nama as kategori, b.nama, tahunterbit, (select count(*)  from subbuku s where idbuku = b.id) as jumlahBuku
             from 
                 buku b
             left join penerbit p

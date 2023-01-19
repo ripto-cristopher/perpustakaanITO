@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Transaksi - Peminjaman {% endblock %}
+{% block masterpagetitle %}Master{% endblock %}
+{% block pagetitle %}Peminjaman {% endblock %}
+{% block subpagetitle %}<li class="breadcrumb-item active">Peminjaman </li>{% endblock %}
+{% block content %}
+
+<!-- Table with hoverable rows -->
+<div class="card">
+    <div class="card-header">
+        <div class="row my-2">
+            <div id="head_container_input_id_anggota">
+                <div id="container_input_id_anggota">
+                    <div class="col-md-12">
+                        <label for="nama" class="form-label fw-bold">NISN / NIS Anggota Perpustakaan</label>
+                        <input type="text" class="form-control" id="nama" name="nama" required>
+                    </div>
+                    <div class="col-md-3 my-2">
+                        <button type="submit" class="btn btn-primary" id="button_next">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="container_input_nama">
+
+        </div>
+
+    </div>
+    <div class="card-body">
+        <div id="head_book_container" class="m-2">
+
+
+        </div>
+    </div>
+
+
+
+
+</div>
+</div>
+
+
+<!-- 
+
+ -->
+
+
+
+{% endblock %}
+
+{% block script %}
+<script>
+
+    const triggger = () => {
+        $("#button_simpan_buku").on('click', function (e) {
+            let html = `
+        <div class="card mb-3 alert alert-dismissible fade show" id="alert" role="alert">
+            <div class="row g-0">
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">Ini Judul Buku</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <p class="card-text"> <span class="fw-bold">no seri : </span> 0001</p>
+                    </div>
+                </div>
+            </div>
+        </div><!-- End Card with an image on left -->
+        `
+
+            $('#book_container').append(html);
+        })
+
+        $("#button_batal").on('click', function (e) {
+            console.log("ini")
+            let html = `
+                <div class="col-md-12">
+                        <label for="nama" class="form-label fw-bold">NISN / NIS Anggota Perpustakaan</label>
+                        <input type="text" class="form-control" id="nama" name="nama" required>
+                    </div>
+                    <div class="col-md-3 my-2">
+                        <button type="submit" class="btn btn-primary" id="button_next">Next</button>
+                    </div>
+
+            `
+
+            $('#head_container_input_id_anggota').html(html);
+            $("#book_container").remove();
+
+        })
+
+
+
+        $("#button_next").on('click', function (e) {
+            let html = `
+        <div id="book_container" class="m-2">
+            <div class="card">
+                <div class="row g-0">
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <div class="row">
+
+                                <div class="col-md-8">
+                                    <h5 class="card-title">Nama Anggota perpustakaan </h5>
+                                </div>
+                                <div class="col-md-2 m-4 text-right">
+                                    <button type="button" class="btn btn-danger" id="button_batal">Battal</button>
+                                </div>
+                            </div>
+                            <p class="card-text"> <span class="fw-bold">NISN : </span> 0001</p>
+                            <p class="card-text"> <span class="fw-bold">Email : </span> 0001</p>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- End Card with an image on left -->
+
+            <div class="my-2">
+                <label for="nama" class="form-label fw-bold m-2">No Seri Buku</label>
+                <input type="text" class="form-control" id="nama" name="nama" required>
+            </div>
+
+            <div class="col-md-3 my-2">
+                <button type="submit" class="btn btn-primary" id="button_simpan_buku">Simpan</button>
+            </div>
+            <div class="col-md-3 my-2">
+
+            </div>
+        </div>
+
+        `
+            $('#head_book_container').after(html);
+
+            $("#container_input_id_anggota").remove();
+            triggger()
+        })
+    }
+
+    $(document).ready(function () {
+        triggger()
+    })
+
+
+</script>
+{% endblock script %}

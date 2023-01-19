@@ -13,7 +13,6 @@ def insertKembalikan(idSubBuku, denda, idadmin):
         'idadmin': idadmin
 
     }
-    print (query, kondisi)
     return customQuery.execute(query, kondisi)
 
 

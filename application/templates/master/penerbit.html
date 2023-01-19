@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Master - Penerbit{% endblock %}
+{% block masterpagetitle %}Master{% endblock %}
+{% block pagetitle %}Penerbit{% endblock %}
+{% block subpagetitle %}<li class="breadcrumb-item active">Penerbit</li>{% endblock %}
+{% block content %}
+
+<!-- Table with hoverable rows -->
+<div class="card">
+    <div class="card-header">
+        <form action="{{ url_for('penerbit') }}" method="post">
+            <div class="row my-2">
+                <div class="col-md-3">
+                    <label for="nama" class="form-label fw-bold">Nama penerbit</label>
+                    <input type="text" class="form-control" id="nama" name="nama" required>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary">Tambah penerbit</button>
+            </div>
+        </form>
+    </div>
+    <div class="card-body">
+        <div class="search-bar col-md-5 m-2">
+
+            <input type="text" name="search" id="search" placeholder="Search" class="form-control"
+                title="Enter search keyword">
+        </div><!-- End Search Bar -->
+        <div class="table-responsive">
+            <table class="table table-hover left " id="table_penerbit">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nama</th>
+                        <th scope="col">action</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for dt in data['result'] %}
+                    <tr>
+                        <th>{{ loop.index }}</th>
+                        <td>{{ dt['nama'] }}</td>
+                        <td>
+                            <button type="button" class="btn btn-outline-primary m-2">Edit</button>
+                            <button type="button" class="btn btn-outline-danger m-2">Hapus</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    $("#search").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#table_penerbit tbody tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+
+    });
+
+    function pinjam(id) {
+
+    }
+
+
+</script>
+{% endblock script %}
