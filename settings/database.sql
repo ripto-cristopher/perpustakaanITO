@@ -29,7 +29,7 @@ id BIGSERIAL  primary key not NULL,
 nama VARCHAR (50) NOT NULL
 )
 
-create table buku (
+create table judulBuku (
 id BIGSERIAL  primary key not NULL,
 idpenerbit BIGINT REFERENCES penerbit (id),
 idpengarang BIGINT REFERENCES pengarang (id),
@@ -40,9 +40,9 @@ tahunTerbit int not null
 
 -- status = {'hilang', 'rusak', 'perbaikan','tersedia'}
 
-create table subBuku (
+create table buku (
 id BIGSERIAL  primary key not NULL,
-idbuku BIGINT REFERENCES buku (id),
+idJudulBuku BIGINT REFERENCES judulBuku (id),
 status Varchar (20) not null DEFAULT 'tersedia' ,
 tanggalMasuk date not null
 )
@@ -62,7 +62,7 @@ password varchar (100) NOT NULL
 
 create table peminjaman (
 id BIGSERIAL  primary key not NULL,
-idsubbuku BIGINT REFERENCES subbuku (id),
+idbuku BIGINT REFERENCES buku (id),
 idadmin BIGINT REFERENCES admin (id),
 idanggotaperpustakaan bigint REFERENCES anggotaperpustakaan (id),
 tanggalpeminjaman date not null default current_date ,
@@ -72,8 +72,30 @@ flag int not null default 1
 
 create table pengembalian (
 id BIGSERIAL primary key not NULL,
-idsubbuku BIGINT REFERENCES subBuku (id),
+idbuku BIGINT REFERENCES Buku (id),
 idadmin BIGINT REFERENCES admin (id),
 tanggalpengembalian date not null default current_date,
 denda int
 )
+
+
+-- hapus table
+
+
+drop table anggotaperpustakaan 
+
+drop table buku 
+
+drop table judulbuku  
+
+drop table admin 
+
+drop table peminjaman 
+
+drop table pengembalian 
+
+drop table kategori 
+
+drop table penerbit 
+
+drop table pengarang 
