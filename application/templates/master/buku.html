@@ -1,165 +1,66 @@
 {% extends "base.html" %}
 
-{% block title %}Master - Buku{% endblock %}
+{% block title %}Master - Judul buku - buku{% endblock %}
 {% block masterpagetitle %}Master{% endblock %}
 {% block pagetitle %}Buku{% endblock %}
-{% block subpagetitle %}<li class="breadcrumb-item active">Buku</li>{% endblock %}
+{% block subpagetitle %}<li class="breadcrumb-item"> <a href="{{ url_for('PageJudulBuku') }}"> Judul Buku</a> </li>
+<li class="breadcrumb-item active">Buku</li>
+{% endblock %}
 {% block content %}
 
 <!-- Table with hoverable rows -->
 <div class="card">
     <div class="card-header">
-        <form action="{{ url_for('buku') }}" method="post">
-            <div class="row my-2">
-                <div class="col-md-3">
-                    <label for="judul_buku" class="form-label fw-bold">Judul Buku</label>
-                    <input type="text" class="form-control" id="judul_buku" name="judul_buku" required>
-                </div>
-                <div class="col-md-2">
-                    <label for="select_penerbit" class="form-label fw-bold">Penerbit</label>
-                    <select id="select_penerbit" name="select_penerbit" class="form-control" style="width: 100%;">
-                        {% for dt in all["penerbit"]['result'] %}
-                        <option> {{ dt['nama'] }} </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label for="select_pengarang" class="form-label fw-bold">Pengarang</label>
-                    <select id="select_pengarang" name="select_pengarang" class="form-control" style="width: 100%;">
-                        {% for dt in all["pengarang"]['result'] %}
-                        <option> {{ dt['nama'] }} </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label for="select_kategori" class="form-label fw-bold">kategori</label>
-                    <select id="select_kategori" name="select_kategori" class="form-control" style="width: 100%;">
-                        {% for dt in all["kategori"]['result'] %}
-                        <option> {{ dt['nama'] }} </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label for="judul_buku" class="form-label fw-bold">Tahun Terbit</label>
-                    <input type="text" class="form-control" id="tahunterbit" name="tahunterbit" required>
-                </div>
-
-
-            </div>
-            <div class="col-md-3">
-                <button type="submit" class="btn btn-primary">Tambah Judul Buku</button>
-            </div>
-
-        </form>
-
+        <h3 class="m-3">
+            {{ judulBuku['result'][0]['nama'] }}
+        </h3>
     </div>
     <div class="card-body">
-        <div class="search-bar col-md-5">
+        <div class="search-bar col-md-5 m-2">
 
             <input type="text" name="search" id="search" placeholder="Search" class="form-control"
                 title="Enter search keyword">
         </div><!-- End Search Bar -->
         <div class="table-responsive">
-            <table class="table table-hover left " id="table_buku">
+            <table class="table table-hover left " id="table_penerbit">
                 <thead>
                     <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Judul</th>
-                        <th scope="col">Penerbit</th>
-                        <th scope="col">Pengarang</th>
-                        <th scope="col">kategori</th>
-                        <th scope="col">Tahun Terbit</th>
-                        <th scope="col">Jumlah</th>
-                        <th scope="col">Action</th>
+                        <th scope="col">no seri</th>
+                        <th scope="col">Tanggal Masuk</th>
+                        <th scope="col">Ketersediaan </th>
+                        <th scope="col">action</th>
                     </tr>
                 </thead>
                 <tbody>
 
                     {% for dt in data['result'] %}
                     <tr>
-                        <td scope="row"></td>
-                        <td>{{ dt['nama'] }}</td>
-                        <td>{{ dt['penerbit'] }}</td>
-                        <td>{{ dt['pengarang'] }}</td>
-                        <td>{{ dt['kategori'] }}</td>
-                        <td>{{ dt['tahunterbit'] }}</td>
-                        <td>{{ dt['jumlahbuku'] }}</td>
+                        <td style="width: 5%">{{dt['id']}}</td>
+                        <td style="width: 20%">{{ dt['tanggalmasuk'] }}</td>
+                        <td style="width: 10%"> <span class="badge 
+                            {% if dt['status'] == 'tersedia' %} 
+                                bg-primary
+                            {% else %}
+                                bg-secondary
+                            {% endif %}" >
+                                {{ dt['status'] }} </span> </td>
                         <td>
-
-                            <button type="button" class="btn btn-outline-primary m-2" data-bs-toggle="modal"
-                                data-bs-target="#largeModal" id="button-{{dt['id']}}"
-                                name="{{ dt['nama'] }}"
-                                onclick="tambahBuku({{dt['id']}})">
-                                Tambah Buku Masuk </button>
+                            <button type="button" class="btn btn-outline-primary m-2">Edit</button>
+                            <button type="button" class="btn btn-outline-danger m-2">Hapus</button>
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-        </div>x`
-    </div>
-</div>
-
-<!-- modal -->
-
-<div class="modal fade" id="largeModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div id="judulBukuMasuk">
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form id="form_tambahBuku" method="post">
-                <div class="modal-body">
-                    <label for="judul_buku" class="form-label fw-bold">Jumlah Buku</label>
-                    <input type="number" class="form-control" id="jumlah" name="jumlah" required>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" id="button_save">Save changes</button>
-                </div>
-            </form>
         </div>
     </div>
-</div><!-- End Large Modal-->
+</div>
 
 {% endblock %}
 
 {% block script %}
 <script>
 
-    function tambahBuku(id) {
-        i = "#button-" + id
-
-        html = ` <h5 class="modal-title fw-bold">`+ $(i).attr('name') + ` </h5>`
-
-        $('#judulBukuMasuk').html(html);
-        $('#button_save').val(id);
-        a = "/master/buku/" + id + "/sub"
-        $("#form_tambahBuku").attr("action", a);
-
-    }
-    $(document).ready(function () {
-        $.fn.select2.defaults.set("theme", "bootstrap4");
-        $('#select_kategori').select2({});
-        $('#select_penerbit').select2({});
-        $('#select_pengarang').select2({});
-
-
-        $("#search").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $("#table_buku tbody tr").filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-
-        });
-
-    });
-    const removeLineBreak = (text) => {
-        text = text.replace(/(\r\n|\n|\r| )/gm, "");
-        return text
-    }
 
 </script>
 {% endblock script %}

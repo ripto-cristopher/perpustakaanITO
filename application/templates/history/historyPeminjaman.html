@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}History - Peminjaman{% endblock %}
+{% block masterpagetitle %}Master{% endblock %}
+{% block pagetitle %}History Peminjaman{% endblock %}
+{% block subpagetitle %}<li class="breadcrumb-item active">Peminjaman</li>{% endblock %}
+{% block content %}
+
+<!-- Table with hoverable rows -->
+<div class="card">
+    <div class="card-header">
+
+    </div>
+    <div class="card-body">
+        <div class="search-bar col-md-5 m-2">
+
+            <input type="text" name="search" id="search" placeholder="Search" class="form-control"
+                title="Enter search keyword">
+        </div><!-- End Search Bar -->
+        <div class="table-responsive">
+            <table class="table table-hover left " id="table_history_peminjaman">
+                <thead>
+                    <tr>
+                        <th scope="col">no serial Buku</th>
+                        <th scope="col">Judul Buku</th>
+                        <th scope="col">NIS anggota</th>
+                        <th scope="col">Nama anggota</th>
+                        <th scope="col">Tanggal Peminjaman</th>
+                        <th scope="col">Tanggal Batas Pengembalian</th>
+                        <th scope="col">Status</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for dt in data['result'] %}
+                    <tr>
+                        <td>{{ dt['idbuku'] }}</td>
+                        <td>{{ dt['namabuku'] }}</td>
+                        <td>{{ dt['nisanggota'] }}</td>
+                        <td>{{ dt['namaanggota'] }}</td>
+                        <td>{{ dt['tanggalpeminjaman'] }}</td>
+                        <td>{{ dt['bataspengembalian'] }}</td>
+                        <td>
+                            {% if dt['flag'] == 0 %}
+                            <span class="badge bg-primary"> Telah Dikembalikan </span>
+                            {% else %}
+                            <span class="badge bg-secondary"> Belum Dikembalikan </span>
+                            {% endif %}
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    $("#search").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#table_history_peminjaman tbody tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+
+    });
+
+
+</script>
+{% endblock script %}

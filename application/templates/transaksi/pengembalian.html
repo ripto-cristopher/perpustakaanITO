@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Transaksi - Pengembalian {% endblock %}
+{% block masterpagetitle %}Master{% endblock %}
+{% block pagetitle %}Pengembalian {% endblock %}
+{% block subpagetitle %}<li class="breadcrumb-item active">Pengembalian </li>{% endblock %}
+{% block content %}
+
+<!-- Table with hoverable rows -->
+<div class="card">
+    <div class="card-header">
+        <div class="row my-2">
+            <form id="form_input_id_buku_pengembalian">
+                <div class="col-md-12">
+                    <label for="input_id_buku" class="form-label fw-bold">No Serial Buku </label>
+                    <input type="number" class="form-control" id="input_id_buku" name="input_id_buku" required>
+                </div>
+                <div class="col-md-3 my-2">
+                    <button type="submit" class="btn btn-primary" id="button_next">Next</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card-body">
+    </div>
+    <div class="card-footer">
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    $("#form_input_id_buku_pengembalian").submit(function (e) {
+        e.preventDefault()
+        $.ajax({
+            type: "POST",
+            url: "{{ url_for ('TransaksiKembali') }}",
+            data: {
+                "idbuku": $('#input_id_buku').val()
+            },
+            success: function (data) {
+                console.log(data)
+                messageAlert(" Pengembalian berhasil proses ", "success  ")
+                form_input_id_buku_pengembalian.reset()
+             }
+        })
+    })
+
+</script>
+{% endblock script %}

@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Master - Anggota{% endblock %}
+{% block masterpagetitle %}Master{% endblock %}
+{% block pagetitle %}Anggota{% endblock %}
+{% block subpagetitle %}<li class="breadcrumb-item active">Anggota</li>{% endblock %}
+{% block content %}
+
+<!-- Table with hoverable rows -->
+<div class="card">
+    <div class="card-header">
+        <form action="#" method="post">
+            <div class="row my-2">
+                <div class="col-md-3">
+                    <label for="judul_buku" class="form-label fw-bold">Judul Buku</label>
+                    <input type="text" class="form-control" id="judul_buku" name="judul_buku" required>
+                </div>
+                <div class="col-md-2">
+                    <label for="select_penerbit" class="form-label fw-bold">Penerbit</label>
+                    <select id="select_penerbit" name="select_penerbit" class="form-control" style="width: 100%;"
+                        placeholder required>
+                        <option value="" disabled selected hidden>Pilih Penerbit...</option>
+
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="select_pengarang" class="form-label fw-bold">Pengarang</label>
+                    <select id="select_pengarang" name="select_pengarang" class="form-control" style="width: 100%;"
+                        placeholder required>
+                        <option value="" disabled selected hidden>Pilih Pengarang...</option>
+
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="select_kategori" class="form-label fw-bold">kategori</label>
+                    <select id="select_kategori" name="select_kategori" class="form-control" style="width: 100%;"
+                        placeholder required>
+                        <option value="" disabled selected hidden>Pilih Kategori ...</option>
+
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="judul_buku" class="form-label fw-bold">Tahun Terbit</label>
+                    <input type="text" class="form-control" id="tahunterbit" name="tahunterbit" required>
+                </div>
+
+
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary">Tambah Judul Buku</button>
+            </div>
+
+        </form>
+
+    </div>
+    <div class="card-body">
+        <div class="search-bar col-md-5 m-3">
+            <input type="text" name="search" id="search" placeholder="Search" class="form-control"
+                title="Enter search keyword">
+        </div><!-- End Search Bar -->
+        <div class="table-responsive">
+            <table class="table table-hover left " id="table_buku">
+                <thead>
+                    <tr>
+                        <th scope="col">NISN / NUPTK</th>
+                        <th scope="col">Nama</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">kategori</th>
+
+                    </tr>
+                    <!-- id, nama, email, tanggallahir , kategori -->
+                </thead>
+                <tbody>
+                    {% for dt in data['result'] %}
+
+
+                    <tr>
+                        <td>{{ dt['id'] }}</td>
+                        <td>{{ dt['nama'] }}</td>
+                        <td>{{ dt['email'] }}</td>
+                        <td>{{ dt['kategori'] }}</td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block script %}
+<script>
+
+
+</script>
+{% endblock script %}

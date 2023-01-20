@@ -4,7 +4,7 @@ from settings.queryFile import QueryStringDb
 def insertPeminjaman(idSubBuku, idAnggota, idadmin):
     customQuery = QueryStringDb()
     query = '''         
-        insert into peminjaman (idsubbuku, idanggotaperpustakaan , idadmin, flag )
+        insert into peminjaman (idbuku, idanggotaperpustakaan , idadmin, flag )
         values (%(idsubBuku)s, %(idAnggota)s, %(idadmin)s, %(flag)s)
             '''
     kondisi = {
@@ -18,10 +18,10 @@ def insertPeminjaman(idSubBuku, idAnggota, idadmin):
     return customQuery.execute(query, kondisi)
 
 
-def updateSubBukuStatus(id):
+def updateBukuStatus(id):
     customQuery = QueryStringDb()
     query = '''         
-        update subbuku set 
+        update buku set 
  	        status = 'dipinjam'
         where id = %(id)s
             '''

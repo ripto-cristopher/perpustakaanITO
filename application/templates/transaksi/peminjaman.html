@@ -12,132 +12,211 @@
         <div class="row my-2">
             <div id="head_container_input_id_anggota">
                 <div id="container_input_id_anggota">
-                    <div class="col-md-12">
-                        <label for="nama" class="form-label fw-bold">NISN / NIS Anggota Perpustakaan</label>
-                        <input type="text" class="form-control" id="nama" name="nama" required>
+                    <form id="form_input_id_anggota">
+                        <div class="col-md-12">
+                            <label for="input_id_anggota" class="form-label fw-bold">NISN / NIS Anggota
+                                Perpustakaan</label>
+                            <input type="number" class="form-control" id="input_id_anggota" name="input_id_anggota"
+                                required>
+                        </div>
+                        <div class="col-md-3 my-2">
+                            <button type="submit" class="btn btn-primary" id="button_next">Next</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+            <!-- diisi card anggota dan input no serial buku -->
+            <div id="head_book_container" class="m-2"></div>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- diisi card buku yang mau dipinjam -->
+        <div id="container_temp_buku"></div>
+
+    </div>
+    <div class="card-footer">
+        <!-- diisi button simpan -->
+        <div id="container_button_simpan">
+
+        </div>
+    </div>
+
+    <!-- berhasil centered Modal -->
+    <div class="modal fade" id="modal_berhasil" tabindex="-1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info  alert-dismissible fade show" role="alert">
+                        <h4 class="alert-heading text-center">Peminjaman Berhasil Di Proses</h4>
                     </div>
-                    <div class="col-md-3 my-2">
-                        <button type="submit" class="btn btn-primary" id="button_next">Next</button>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <form action="{{ url_for('pagePinjam') }}">
+                        <button type="submit" class="btn btn-primary">Kembali</button>
+                    </form>
                 </div>
             </div>
         </div>
-        <div id="container_input_nama">
-
-        </div>
-
-    </div>
-    <div class="card-body">
-        <div id="head_book_container" class="m-2">
-
-
-        </div>
-    </div>
-
-
-
+    </div><!-- End Vertically centered Modal-->
 
 </div>
-</div>
-
-
-<!-- 
-
- -->
-
 
 
 {% endblock %}
 
 {% block script %}
 <script>
-
-    const triggger = () => {
-        $("#button_simpan_buku").on('click', function (e) {
-            let html = `
-        <div class="card mb-3 alert alert-dismissible fade show" id="alert" role="alert">
-            <div class="row g-0">
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <h5 class="card-title">Ini Judul Buku</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        <p class="card-text"> <span class="fw-bold">no seri : </span> 0001</p>
-                    </div>
-                </div>
-            </div>
-        </div><!-- End Card with an image on left -->
-        `
-
-            $('#book_container').append(html);
-        })
-
-        $("#button_batal").on('click', function (e) {
-            console.log("ini")
-            let html = `
-                <div class="col-md-12">
-                        <label for="nama" class="form-label fw-bold">NISN / NIS Anggota Perpustakaan</label>
-                        <input type="text" class="form-control" id="nama" name="nama" required>
-                    </div>
-                    <div class="col-md-3 my-2">
-                        <button type="submit" class="btn btn-primary" id="button_next">Next</button>
-                    </div>
-
-            `
-
-            $('#head_container_input_id_anggota').html(html);
-            $("#book_container").remove();
-
-        })
-
-
-
-        $("#button_next").on('click', function (e) {
-            let html = `
-        <div id="book_container" class="m-2">
-            <div class="card">
-                <div class="row g-0">
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <div class="row">
-
-                                <div class="col-md-8">
-                                    <h5 class="card-title">Nama Anggota perpustakaan </h5>
+    $(document).ready(function () {
+        triggger_button_next()
+        function triggger_button_next() {
+            $("#form_input_id_anggota").submit(function (e) {
+                e.preventDefault()
+                $.ajax({
+                    type: "GET",
+                    url: "{{ url_for ('anggotaPerpustakaan') }}",
+                    data: {
+                        "id": $('#input_id_anggota').val()
+                    },
+                    success: function (data) {
+                        if (data['status'] == 'F') {
+                            // messageAlert('W', 'Ada kesalahan di Query Database.');
+                        } else if (data['result'].length == 0) {
+                            messageAlert(" Anggota Perpustakaan Belum mendaftar, Silakan daftar terlebih dahulu ", "warning  ")
+                        } else {
+                            let html = `
+                                <div id="container_annggota_and_input_id_buku">
+                                    <div id="book_container">
+                                        <div class="card">
+                                            <div class="row g-0">
+                                                <!--
+                                                <div class="col-md-3">
+                                                <img src="https://thumbs.dreamstime.com/b/vector-illustration-avatar-dummy-logo-collection-image-icon-stock-isolated-object-set-symbol-web-137160339.jpg" class="img-fluid rounded-start" height=10% alt="...">
+                                                </div>
+                                                -->
+                                                <div class="col-md-8">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-md-8">
+                                                                <input type="hidden" id="idAnggotaPerpustakaan" Value="`+ data['result'][0]['id'] + `">
+                                                                <h5 class="card-title fw-bold"> `+ (data['result'][0]['nama']).toLocaleUpperCase() + `</h5>
+                                                            </div>
+                                                            <div class="col-md-2 text-right">
+                                                                <form action="{{ url_for('pagePinjam') }}">
+                                                                     <button type="submit" class="btn btn-danger m-1" id="button_batal" >Battal</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                        <p class="card-text"> <span class="fw-bold">NISN :  </span> `+ data['result'][0]['id'] + `</p>
+                                                        <p class="card-text"> <span class="fw-bold">Email : </span> `+ data['result'][0]['email'] + `</p>
+                                                        <p class="card-text"> <span class="fw-bold">Kategori : </span> `+ data['result'][0]['kategori'] + `</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <form id="form_tambah_judul_buku">
+                                            <div class="my-2">
+                                                <label for="nama" class="form-label fw-bold m-2">No Seri Buku</label>
+                                                <input type="text" class="form-control" id="id_buku" name="id_buku" required>
+                                            </div>
+                                            <div class="col-md-3 my-2">
+                                                <button type="submit" class="btn btn-primary" id="button_tambah_buku"> Tambah </button>
+                                            </div>
+                                        </form>
+                                        
+                                      
+                                    </div>
                                 </div>
-                                <div class="col-md-2 m-4 text-right">
-                                    <button type="button" class="btn btn-danger" id="button_batal">Battal</button>
+                            `
+                            $('#head_book_container').after(html);
+                            let htmlButton = `
+                                <div id="container_annggota_and_input_id_buku">
+                                    <button type="submit" class="btn btn-primary" id="button_save_pinjam_buku">Simpan</button>
+                                </div>
+                            `
+                            $('#container_button_simpan').after(htmlButton);
+                            $("#container_input_id_anggota").remove();
+                            triggger_button_tambah_buku()
+                        }
+                    }
+                });
+
+            })
+
+        }
+
+        function triggger_button_tambah_buku() {
+            $('#form_tambah_judul_buku').submit(function (e) {
+                e.preventDefault()
+                $.ajax({
+                    type: "GET",
+                    url: "{{ url_for ('buku') }}",
+                    data: {
+                        "id": $('#id_buku').val()
+                    },
+                    success: function (data) {
+                        if (data['status'] == 'F') {
+                            // messageAlert('W', 'Ada kesalahan di Query Database.');
+                        } else if (data['result'].length == 0) {
+                            messageAlert(" Buku Tidak Ada Di Daftar, Cek Kembali No Serial Buku ", "warning  ")
+                        } else {
+                            let html = `
+                            <div id="card_temp_buku">
+                                <div class="card mb-3 alert alert-dismissible fade show" id="alert" role="alert">
+                                    <div class="row g-0">
+                                        <div class="col-md-8">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Judul Buku : `+ data['result'][0]['namabuku'] + `</h5>
+                                                <input type="hidden" class="id_buku_pinjam" Value="`+ data['result'][0]['id'] + `">
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> 
+                                                <p class="card-text"> <span class="fw-bold">no seri         :  </span> `+ data['result'][0]['id'] + ` </p>
+                                                <!-- 
+                                                <p class="card-text"> <span class="fw-bold">kategori        :  </span> `+ data['result'][0]['kategori'] + ` </p>
+                                                <p class="card-text"> <span class="fw-bold">penerbit        :  </span> `+ data['result'][0]['penerbit'] + ` </p>
+                                                <p class="card-text"> <span class="fw-bold">pengarang       :  </span> `+ data['result'][0]['pengarang'] + ` </p>
+                                                <p class="card-text"> <span class="fw-bold">tahunterbit     :  </span> `+ data['result'][0]['tahunterbit'] + ` </p>
+                                                -->                                               
+                                             </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <p class="card-text"> <span class="fw-bold">NISN : </span> 0001</p>
-                            <p class="card-text"> <span class="fw-bold">Email : </span> 0001</p>
-                        </div>
-                    </div>
-                </div>
-            </div><!-- End Card with an image on left -->
+                            `
+                            $('#container_temp_buku').append(html);
+                        }
+                    }
+                })
 
-            <div class="my-2">
-                <label for="nama" class="form-label fw-bold m-2">No Seri Buku</label>
-                <input type="text" class="form-control" id="nama" name="nama" required>
-            </div>
+                form_tambah_judul_buku.reset()
+            })
 
-            <div class="col-md-3 my-2">
-                <button type="submit" class="btn btn-primary" id="button_simpan_buku">Simpan</button>
-            </div>
-            <div class="col-md-3 my-2">
+            $("#button_save_pinjam_buku").on('click', function (e) {
+                let arrayIdBuku = []
+                console.log("id_anggota", $('#idAnggotaPerpustakaan').val())
+                let domArrayIdBuku = document.querySelectorAll(".id_buku_pinjam");
+                for (var i = 0; i < domArrayIdBuku.length; i++) {
+                    TempData = domArrayIdBuku[i].value
+                    arrayIdBuku.push(TempData)
+                }
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url_for ('TransaksiPinjam') }}",
+                    data: {
+                        "idAnggota": $('#idAnggotaPerpustakaan').val(),
+                        "idBuku": JSON.stringify(arrayIdBuku)
+                    },
+                    success: function (data) {
+                        console.log(data)
+                        $('#modal_berhasil').modal('show');
+                    }
+                })
+            })
+        }
 
-            </div>
-        </div>
-
-        `
-            $('#head_book_container').after(html);
-
-            $("#container_input_id_anggota").remove();
-            triggger()
-        })
-    }
-
-    $(document).ready(function () {
-        triggger()
-    })
+    }) // end document ready
 
 
 </script>

@@ -1,14 +1,14 @@
 from settings.queryFile import QueryStringDb
 
 
-def insertKembalikan(idSubBuku, denda, idadmin):
+def insertKembalikan(idBuku, denda, idadmin):
     customQuery = QueryStringDb()
     query = '''         
-        insert into pengembalian  (idsubbuku, idadmin, denda )
-        values (%(idsubBuku)s, %(idadmin)s, %(denda)s )
+        insert into pengembalian  (idbuku, idadmin, denda )
+        values (%(idBuku)s, %(idadmin)s, %(denda)s )
             '''
     kondisi = {
-        'idsubBuku': idSubBuku,
+        'idBuku': idBuku,
         'denda': denda,
         'idadmin': idadmin
 
@@ -16,27 +16,27 @@ def insertKembalikan(idSubBuku, denda, idadmin):
     return customQuery.execute(query, kondisi)
 
 
-def updateSubBukuStatus(idSubBuku):
+def updateSubBukuStatus(idBuku):
     customQuery = QueryStringDb()
     query = '''         
-        update subbuku set 
+        update buku set 
  	        status = 'tersedia'
-        where id = %(idSubBuku)s
+        where id = %(idBuku)s
             '''
     kondisi = {
-        'idSubBuku': idSubBuku
+        'idBuku': idBuku
     }
     return customQuery.execute(query, kondisi)
 
 
-def updatePinjam(idSubBuku):
+def updatePinjam(idBuku):
     customQuery = QueryStringDb()
     query = '''         
     update peminjaman set flag = 0
-    where idsubbuku = %(idSubBuku)s and flag = 1 
+    where idbuku = %(idBuku)s and flag = 1 
             '''
     kondisi = {
-        'idSubBuku': idSubBuku
+        'idBuku': idBuku
     }
     return customQuery.execute(query, kondisi)
 

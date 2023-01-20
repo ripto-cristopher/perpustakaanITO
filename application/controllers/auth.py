@@ -64,7 +64,8 @@ def registerAnggota():
         print(tanggalLahir)
         passwordHash = generate_password_hash(tanggalLahir, "sha256")
         print(passwordHash)
-        re = insertUser(id, nama, email, tanggalLahir, kategori, passwordHash)
+        re = insertUser(id, nama.upper(), email.lower(),
+                        tanggalLahir, kategori, passwordHash)
         if re['status'] == 'T':
             #     # flash('Registration has been successful, please login', 'success')
             #     # return redirect(url_for('login'))
@@ -80,19 +81,21 @@ def registerAnggota():
 @app.route('/logout')
 def logout():
     session.pop('loggedin', None)
+    session.pop('admin', None)
     session.pop('id', None)
-    session.pop('nama', None)
-    session.pop('email', None)
-    session['flag'] = 1  # 0 = admin | 1 = user
-    return "berhasil logout"
-    # return redirect(url_for('login'))
+    # session.pop('nama', None)
+    # session.pop('email', None)
+
+    # session.pop('flag', None)  # 0 = admin | 1 = user
+    return redirect(url_for('login'))
 
 
 def adminLoginRequired(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        print('loggedin' not in session)
         if 'loggedin' not in session and 'admin' not in session:
-            return "anda harus login terlebih dahulu"
-            # return redirect(url_for('login'))
+            # return "anda harus login terlebih dahulu"
+            return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated_function

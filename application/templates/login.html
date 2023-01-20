@@ -1,39 +1,130 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block title %}Index{% endblock %}
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-{% block content %}
+    {% block head %}
+    <title>{% block title %}{% endblock %}</title>
+    {% endblock %}
+    <meta content="" name="description">
+    <meta content="" name="keywords">
 
-<div class="row">
-    <div class="d-flex justify-content-center">
-        <div class="card mt-5">
-            <div class="d-flex align-items-center h-custom-2 px-5 ms-xl-4 mt-5 pt-5 pt-xl-0 mt-xl-n5">
-                <form action="{{ url_for('login') }}" method="POST" style="width: 23rem;" id="">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css">
+    <!-- jquery -->
+    <script src="{{ url_for('static', filename='assets/jquery.js') }}">   </script>
 
-                    <h3 class="font-weight-bold my-2 mb-3">Log in</h3>
+    <!-- select2 -->
+    <link href="{{ url_for('static', filename='assets/select2/dist/css/select2.min.css') }}" rel="stylesheet" />
+    <script src="{{ url_for('static', filename='assets/select2/dist/js/select2.min.js') }}">   </script>
 
-                    <div class="form-outline mb-4">
-                        <label class="form-label" for="id">NISN/NUPTK</label>
-                        <input type="id" id="id" name="id" class="form-control form-control-lg" />
-                    </div>
+    <!-- Favicons -->
+    <link href="{{url_for('static', filename='assets/img/favicon.pn') }}" rel="icon">
+    <link href="{{url_for('static', filename='assets/img/apple-touch-icon.pn') }}" rel="apple-touch-icon">
 
-                    <div class="form-outline mb-4">
-                        <label class="form-label" for="password">password</label>
-                        <input type="password" id="password" name="password" class="form-control form-control-lg" />
-                    </div>
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+        rel="stylesheet">
 
-                    <div class="pt-1 mb-4">
-                        <button class="btn btn-outline-dark" type="submit">Login</button>
-                    </div>
+    <!-- Vendor CSS Files -->
 
-                    <!-- <p>Don't have an account? <a href="#" class="link-info">Register here</a></p> -->
+    <!-- boostrap  -->
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous"> -->
 
-                </form>
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/quill/quill.snow.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/quill/quill.bubble.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/simple-datatables/style.css') }}" rel="stylesheet">
 
-            </div>
-        </div>
+    <!-- Template Main CSS File -->
+    <link href="{{ url_for('static', filename='assets/css/style.css') }}" rel="stylesheet">
 
+    <!-- =======================================================
+  * Template Name: NiceAdmin - v2.5.0
+  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body style="height: 100%;">
+    <!-- <div>
+        <header id="header" class="header d-flex align-items-center">
+
+
+        </header>
+
+    </div> -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+
+    <div class="alert alert-primary alert-dismissible fade show alert-{{ category }}" role="alert">
+        {{ message }}
+
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
-</div>
-{% endblock %}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <!-- block konten -->
+    <div class="row">
+        <div class="d-flex justify-content-center">
+            <div class="card mt-5">
+                <div class="d-flex align-items-center h-custom-2 px-5 ms-xl-4 mt-5 pt-5 pt-xl-0 mt-xl-n5">
+                    <form action="{{ url_for('login') }}" method="POST" style="width: 23rem;" id="">
+
+                        <h3 class="font-weight-bold my-2 mb-3">Log in</h3>
+
+                        <div class="form-outline mb-4">
+                            <label class="form-label" for="id">NISN/NUPTK</label>
+                            <input type="id" id="id" name="id" class="form-control form-control-lg" />
+                        </div>
+
+                        <div class="form-outline mb-4">
+                            <label class="form-label" for="password">password</label>
+                            <input type="password" id="password" name="password" class="form-control form-control-lg" />
+                        </div>
+
+                        <div class="pt-1 mb-4">
+                            <button class="btn btn-outline-dark" type="submit">Login</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Vendor JS Files -->
+    <script src="{{url_for('static', filename='assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
+    <script src="{{url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{url_for('static', filename='assets/vendor/chart.js/chart.umd.js') }}"></script>
+    <script src="{{url_for('static', filename='assets/vendor/echarts/echarts.min.js') }}"></script>
+    <script src="{{url_for('static', filename='assets/vendor/quill/quill.min.js') }}"></script>
+    <script src="{{url_for('static', filename='assets/vendor/simple-datatables/simple-datatables.js') }}"></script>
+    <script src="{{url_for('static', filename='assets/vendor/tinymce/tinymce.min.js') }}"></script>
+    <script src="{{url_for('static', filename='assets/vendor/php-email-form/validate.js') }}"></script>
+
+    <!-- Template Main JS File -->
+    <script src="{{url_for('static', filename='assets/js/main.js') }}"></script>
+
+    <!-- jquery
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"
+        integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+</body>
+
+</html>
+
+
+
+<script>
+</script>
