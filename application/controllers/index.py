@@ -9,8 +9,11 @@ from application.controllers.auth import adminLoginRequired
 @adminLoginRequired
 def home():
 
-    data = getDate()
+    data = getjumlahanggota()
+    jumlahbuku = getjumlahbuku()
+    print (data)
 
-    return render_template("index.html")
+    return render_template("index.html", data=data, jumlahbuku=jumlahbuku)
 
     # return jsonify(data)
+

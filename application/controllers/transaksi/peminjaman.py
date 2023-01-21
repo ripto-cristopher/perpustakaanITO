@@ -23,7 +23,7 @@ def TransaksiPinjam():
             if respon['status'] == 'T':
                 respon = updateBukuStatus(n)
                 print("respon  ", respon)
-        return "peminjaman berhasil di prosses"
+        return respon
     else:
         return "method tidak dapat dieksekusi"
 
