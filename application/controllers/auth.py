@@ -61,19 +61,20 @@ def registerAnggota():
         email = request.form['email']
         kategori = request.form['kategori']
         tanggalLahir = request.form['tanggalLahir']
-        print(tanggalLahir)
         passwordHash = generate_password_hash(tanggalLahir, "sha256")
         print(passwordHash)
         re = insertUser(id, nama.upper(), email.lower(),
                         tanggalLahir, kategori, passwordHash)
+        print(re)
         if re['status'] == 'T':
-            #     # flash('Registration has been successful, please login', 'success')
-            #     # return redirect(url_for('login'))
-            return re
+            flash('anggota perpustakaan '+nama +' berhasil ditambah ', 'success')
+
+            return redirect(url_for('pageAnggotaPerpustakaan'))
         else:
+            flash('anggota perpustakaan gagal ditambahakan nisn/email duplikat ', 'danger')
             #     # flash('Registration failed', 'danger')
             #     # return "Registration gagal, danger"
-            return re
+            return redirect(url_for('pageAnggotaPerpustakaan'))
     # return render_template("register.html")
     return f"berhasil {id}, {nama}, {passwordHash}"
 

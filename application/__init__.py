@@ -15,5 +15,7 @@ from application.controllers.master.pengarang import *
 from application.controllers.master.penerbit import *
 from application.controllers.master.kategori import *
 from application.controllers.history.historyPeminjaman import *
+from application.controllers.history.historyPengembalian import *
+from application.controllers.users.users import *
 from application.controllers.auth import *
 from application.controllers.index import *

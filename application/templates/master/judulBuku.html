@@ -93,14 +93,18 @@
                                 <button type="button" class="btn btn-outline-primary m-2" data-bs-toggle="modal"
                                     data-bs-target="#largeModal" id="button-{{dt['id']}}" name="{{ dt['nama'] }}"
                                     onclick="tambahBuku( {{ dt['id'] }} )">
-                                    Tambah Buku Masuk
-                                </button>
-
-                                <button type="submit" class="btn btn-outline-info m-2">
-                                    Lihat Detail Buku
+                                    Buku Masuk
                                 </button>
                             </form>
-
+                            <button type="submit" class="btn btn-outline-info m-2">
+                                Detail Buku
+                            </button>
+                            <form id="form_get_detail_buku" value="{{ dt['id'] }}">
+                                <button type="submit" class="btn btn-outline-warning m-2" data-bs-toggle="modal"
+                                    data-bs-target="#modal_updata_judul_buku" id="button_edit" >
+                                    EDIT
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     {% endfor %}
@@ -122,7 +126,7 @@
             </div>
             <form id="form_tambahBuku" method="post">
                 <div class="modal-body">
-                    <label for="judul_buku" class="form-label fw-bold">Jumlah Buku</label>
+                    <label for="jumlah" class="form-label fw-bold">Jumlah Buku</label>
                     <input type="number" class="form-control" id="jumlah" name="jumlah" required>
                 </div>
                 <div class="modal-footer">
@@ -133,6 +137,64 @@
         </div>
     </div>
 </div><!-- End Large Modal-->
+
+<div class="modal fade" id="modal_updata_judul_buku" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Basic Modal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="post">
+                    <div class="row my-2">
+                        <div class="col-md-3">
+                            <label for="input_update_judul_buku" class="form-label fw-bold">Judul Buku</label>
+                            <input type="text" class="form-control" id="input_update_judul_buku" name="input_update_judul_buku" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="select_update_penerbit" class="form-label fw-bold">Penerbit</label>
+                            <select id="select_update_penerbit" name="select_update_penerbit" class="form-control"
+                                style="width: 100%;" placeholder required>
+                                <option value="" disabled selected hidden>Pilih Penerbit...</option>
+                                {% for dt in all["penerbit"]['result'] %}
+                                <option value="{{ dt['id'] }}"> {{ dt['nama'] }} </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="select_update_pengarang" class="form-label fw-bold">Pengarang</label>
+                            <select id="select_update_pengarang" name="select_update_pengarang" class="form-control"
+                                style="width: 100%;" placeholder required>
+                                <option value="" disabled selected hidden>Pilih Pengarang...</option>
+                                {% for dt in all["pengarang"]['result'] %}
+                                <option value="{{ dt['id'] }}"> {{ dt['nama'] }} </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="select_update_kategori" class="form-label fw-bold">kategori</label>
+                            <select id="select_update_kategori" name="select_update_kategori" class="form-control"
+                                style="width: 100%;" placeholder required>
+                                <option value="" disabled selected hidden>Pilih Kategori ...</option>
+                                {% for dt in all["kategori"]['result'] %}
+                                <option value="{{ dt['id'] }}"> {{ dt['nama'] }} </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="judul_buku" class="form-label fw-bold">Tahun Terbit</label>
+                            <input type="text" class="form-control" id="tahunterbit" name="tahunterbit" required>
+                        </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
 
@@ -151,15 +213,23 @@
     }
     $(document).ready(function () {
 
-
-        // start select2 setting 
+        // start select2 setting        
         $.fn.select2.defaults.set("theme", "bootstrap4");
         $('#select_kategori').select2({});
         $('#select_penerbit').select2({});
         $('#select_pengarang').select2({});
 
-        // end select2 setting 
+        $('#select_update_kategori').select2({
+            dropdownParent: $('#modal_updata_judul_buku')
+        });
+        $('#select_update_penerbit').select2({
+            dropdownParent: $('#modal_updata_judul_buku')
+        });
+        $('#select_update_pengarang').select2({
+            dropdownParent: $('#modal_updata_judul_buku')
+        });
 
+        // end select2 setting 
 
         $("#search").on("keyup", function () {
             var value = $(this).val().toLowerCase();
@@ -178,5 +248,52 @@
         });
 
     });
+
+    $('#form_tambah_judul_buku').submit(function (e) {
+        e.preventDefault()
+        $.ajax({
+            type: "GET",
+            url: "{{ url_for ('buku') }}",
+            data: {
+                "id": $('#id_buku').val()
+            },
+            success: function (data) {
+                if (data['status'] == 'F') {
+                } else if (data['result'].length == 0) {
+                    messageAlert(" Buku Tidak Ada Di Daftar, Cek Kembali No Serial Buku ", "warning  ")
+                } else {
+                }
+            }
+        })
+
+        form_tambah_judul_buku.reset()
+    })
+    $('*#form_get_detail_buku').submit(function (e) {
+        e.preventDefault()
+        var id = $(this).val()
+        console.log (id)
+        var url = "/judulBuku/" + id
+        console.log(url)
+        // $.ajax({
+        //     type: "GET",
+        //     url: "/judulBuku/" + id,
+        //     data: {
+        //     },
+        //     success: function (data) {
+        //         if (data['status'] == 'F') {
+        //         } else if (data['result'].length == 0) {
+        //             messageAlert(" Buku Tidak Ada Di Daftar, Cek Kembali No Serial Buku ", "warning  ")
+        //         } else {
+        //             console.log (data)
+        //             $('#input_update_judul_buku').val(data['result'][0]['nama'])
+        //             console.log ($('#input_update_judul_buku').val())
+        //         }
+        //     }
+        // })
+    })
+
+
+
+    // http://localhost:8089/
 </script>
 {% endblock script %}

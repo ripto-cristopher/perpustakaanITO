@@ -4,8 +4,8 @@ from settings.queryFile import QueryStringDb
 def getAllJudulBuku():
     customQuery = QueryStringDb()
     query = '''         
-            select 
-                b.id, p.nama as penerbit , p2.nama as pengarang, k.nama as kategori, b.nama, tahunterbit, (select count(*)  from buku s where  idJudulbuku = b.id) as jumlahBuku
+			select 
+                b.id, p.nama as penerbit , p2.nama as pengarang, k.nama as kategori, b.nama, tahunterbit, (select count(*)  from buku s where  idJudulbuku = b.id and s.status = 'tersedia' ) as jumlahbukutersedia, (select count(*)  from buku s where  idJudulbuku = b.id) as jumlahBuku
             from 
                 judulbuku  b
             left join penerbit p
@@ -38,6 +38,7 @@ def getJudulBuku(id):
     kondisi = {
         'id': id
     }
+    print(query, kondisi)
     return customQuery.select(query, kondisi)
 
 
@@ -58,15 +59,14 @@ def insertJudulBuku(idpenerbit, idpengarang, idkategori, nama, tahunterbit):
     return customQuery.execute(query, kondisi)
 
 
-
 # def updateBuku(id, idpenerbit, idpengarang, idkategori, nama, tahunterbit):
 #     customQuery = QueryStringDb()
-#     query = '''         
-#         update buku set 
-#             idpenerbit = %(idpenerbit)s, 
+#     query = '''
+#         update buku set
+#             idpenerbit = %(idpenerbit)s,
 #             idpengarang = %(idpengarang)s,
 #             idkategori = %(idkategori)s,
-#             nama =  %(nama)s, 
+#             nama =  %(nama)s,
 #             tahunterbit = %(tahunterbit)s
 #         where id = %(id)s
 #             '''
@@ -104,7 +104,7 @@ def getAllBukuByIdJudulBuku(id):  # perlu diedit
     return customQuery.select(query, kondisi)
 
 
-def getAllBuku():  
+def getAllBuku():
     customQuery = QueryStringDb()
     query = '''         
         select 
@@ -123,6 +123,7 @@ def getAllBuku():
     kondisi = {
     }
     return customQuery.select(query, kondisi)
+
 
 def getBuku(id):  # perlu diedit
     customQuery = QueryStringDb()
@@ -164,18 +165,18 @@ def insertBuku(idBuku):
 
 # def getBuku(id):  # perlu diedit
 #     customQuery = QueryStringDb()
-#     query = '''         
-#         select 
-#             s.id, p.nama as penerbit , p2.nama as pengarang, k.nama as kategori, b.nama as namaBuku, tahunterbit  
-#         from 
+#     query = '''
+#         select
+#             s.id, p.nama as penerbit , p2.nama as pengarang, k.nama as kategori, b.nama as namaBuku, tahunterbit
+#         from
 #             subbuku s
 #         left join buku b
 #             on s.idBuku = b.id
 #         left join penerbit p
 #             on b.idpenerbit  = p.id
-#         left join pengarang p2  
+#         left join pengarang p2
 #             on b.idpengarang = p2.id
-#         left join kategori k    
+#         left join kategori k
 #             on b.idkategori = k.id
 #         where b.id = %(id)s
 #             '''
@@ -185,21 +186,19 @@ def insertBuku(idBuku):
 #     return customQuery.select(query, kondisi)
 
 
-
-
 # def getBuku(id):
 #     customQuery = QueryStringDb()
-#     query = '''         
-#             select 
-#                 b.id, p.nama as penerbit , p2.nama as pengarang, k.nama as kategori, b.nama, tahunterbit  
-#             from 
+#     query = '''
+#             select
+#                 b.id, p.nama as penerbit , p2.nama as pengarang, k.nama as kategori, b.nama, tahunterbit
+#             from
 #                 buku b
 #             left join penerbit p
 #                 on b.idpenerbit  = p.id
-#             left join pengarang p2  
+#             left join pengarang p2
 #                 on b.idpengarang = p2.id
-#             left join kategori k    
-#                 on b.idkategori = k.id 
+#             left join kategori k
+#                 on b.idkategori = k.id
 #             where b.id = %(id)s
 #             '''
 #     kondisi = {

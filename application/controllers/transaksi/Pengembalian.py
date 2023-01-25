@@ -17,13 +17,15 @@ def TransaksiKembali():
     elif request.method == 'POST':
         idbuku = request.form['idbuku']
         denda = 0
-        respon = insertKembalikan(idbuku, denda, session['id'])
-       
+        id_pengembalian = getIdpengembalian(idbuku)
+        id_pengembalian = id_pengembalian['result'][0]['id']
+        respon = insertKembalikan(idbuku, denda, session['id'], id_pengembalian)
+        
         if respon['status'] == 'T':
             respon = updateSubBukuStatus(idbuku)
             respon = updatePinjam(idbuku)
             return "berhasi update sub buku status"
-        return respon
+        return "500"
     else:
         return "method tidak dapat dieksekusi"
 

@@ -18,6 +18,13 @@ def mastersBuku():
     }
     return jsonify(data)
 
+
+@app.route('/judulBuku/<int:id>', methods=['GET', 'POST', 'PUT'])
+@adminLoginRequired
+def judulBukubyid(id):
+    data = getJudulBuku(id)
+    return jsonify(data)
+
 @app.route('/judulBuku', methods=['GET', 'POST', 'PUT'])
 @adminLoginRequired
 def judulBuku():
@@ -70,21 +77,6 @@ def anggotaPerpustakaan():
         else:
             data = getAnggotaPerpustakaans()
         return jsonify(data)
-    if request.method == 'POST':
-        return "under maitenance"
-    return jsonify(data)
-
-
-@app.route('/bukucoba', methods=['GET', 'POST', 'PUT'])
-def bukucoba():
-    id = request.args.get("id")
-    if request.method == 'GET':
-        if id:
-            data = getBuku(id)
-        else:
-            data = getAllBuku()
-            print (data)
-        return jsonify(data['result'])
     if request.method == 'POST':
         return "under maitenance"
     return jsonify(data)

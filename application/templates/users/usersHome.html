@@ -1,0 +1,143 @@
+{% extends "users/usersBase.html" %}
+
+{% block title %}Index{% endblock %}
+{% block pagetitle %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="row">
+
+
+    <div class="alert alert-primary fade show" role="alert">
+        <h4 class="alert-heading">INFORMASI</h4>
+        <p>Selamat Datang di Website Perpustakaan SMA Swasta Lentera Harapan Nias.
+            Silahkan pergunakan informasi yang terdapat pada aplikasi ini dengan sebaik-baiknya.</p>
+        <hr>
+        <p class="mb-0">Jam operasional 07.30-15.30</p>
+    </div>
+    <div class="search-bar col-md-5 m-2">
+    
+        <input type="text" name="search" id="search" placeholder="Search" class="form-control" title="Enter search keyword">
+    </div><!-- End Search Bar -->
+    <div class="table-responsive">
+
+        <div class="table-responsive">
+            <table class="table table-hover left " id="table_buku">
+                <thead>
+                    <tr>
+                        <th class="text-center" scope="col">#</th>
+                        <th scope="col">Judul</th>
+                        <th scope="col">Penerbit</th>
+                        <th scope="col">Pengarang</th>
+                        <th scope="col">kategori</th>
+                        <th scope="col">Tahun Terbit</th>
+                        <th scope="col">Tersedia/Total</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dt in data['result'] %}
+                    <tr>
+                        <td style="width: 2%">{{dt['id']}}</td>
+                        <td style="width: 20%">{{ dt['nama'] }}</td>
+                        <td style="width: 9%">{{ dt['penerbit'] }}</td>
+                        <td style="width: 7%">{{ dt['pengarang'] }}</td>
+                        <td style="width: 7%">{{ dt['kategori'] }}</td>
+                        <td style="width: 7%">{{ dt['tahunterbit'] }}</td>
+                        <td style="width: 4%">{{ dt['jumlahbukutersedia'] }} / {{ dt['jumlahbuku'] }}</td>
+                        <td style="width: 20%">
+                        {% if dt['jumlahbuku'] >= dt['jumlahbukutersedia'] and dt['jumlahbuku'] !=0 %}
+                        <span class="badge bg-primary"  > tersedia </span>
+                        {% else %}
+                        <span class="badge bg-secondary"> tidak tersedia </span>
+                        {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+</div>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    $("#search").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#table_buku tbody tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+
+    });
+
+
+</script>
+{% endblock script %}
