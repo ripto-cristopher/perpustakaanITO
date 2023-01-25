@@ -77,7 +77,8 @@ def selectUser(id):
     }
     return customQuery.select(query, kondisi)
 
-def insertUser(id, nama,email ,tanggalLahir,kategori, passwordHash ):
+
+def insertUser(id, nama, email, tanggalLahir, kategori, passwordHash):
     customQuery = QueryStringDb()
     query = '''
     insert into 
@@ -93,5 +94,24 @@ def insertUser(id, nama,email ,tanggalLahir,kategori, passwordHash ):
         'passwordhash': passwordHash
     }
 
-    print (query, kondisi)
+    print(query, kondisi)
+    return customQuery.execute(query, kondisi)
+
+
+def UpdatePswUsers(id, passwordHash):
+    customQuery = QueryStringDb()
+    query = '''
+    update 
+        anggotaperpustakaan 
+    set 
+        password = %(passwordhash)s
+    where 
+        id = %(id)s
+    '''
+    kondisi = {
+        'id': id,
+        'passwordhash': passwordHash
+    }
+
+    print(query, kondisi)
     return customQuery.execute(query, kondisi)

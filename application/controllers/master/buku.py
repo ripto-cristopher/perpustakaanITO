@@ -5,7 +5,7 @@ from application.controllers.auth import adminLoginRequired
 from application.controllers.webservis import *
 
 
-@app.route('/master/judulqbuku/<int:id>/buku', methods=['GET', 'POST', 'PUT'])
+@app.route('/master/judulbuku/<int:id>/buku', methods=['GET', 'POST', 'PUT'])
 @adminLoginRequired
 def PageBuku(id):
     

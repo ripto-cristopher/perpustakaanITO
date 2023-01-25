@@ -20,15 +20,18 @@ def login():
                 session['admin'] = True
                 return redirect(url_for('home'))
                 # return "anda berhasil login sebagai admin"
-        elif reUsers['status'] == 'T' and reUsers['result'] != []:
+            else:
+                flash('wrong password or nisn', 'danger')
+        if reUsers['status'] == 'T' and reUsers['result'] != []:
             if check_password_hash(reUsers['result'][0]['password'], password):
                 session['loggedin'] = True
                 session['id'] = reUsers['result'][0]['id']
-                session['email'] = reUsers['result'][0]['email']
                 session['user'] = True
-                return "anda berhasil login sebagai user"
+                return redirect(url_for('usersHome'))
+            else:
+                flash('wrong password or nisn', 'danger')
         else:
-            flash('wrong password or email', 'danger')
+            flash('wrong password or nis', 'danger')
     return render_template("login.html")
 
 
@@ -61,17 +64,20 @@ def registerAnggota():
         email = request.form['email']
         kategori = request.form['kategori']
         tanggalLahir = request.form['tanggalLahir']
+        print(tanggalLahir)
         passwordHash = generate_password_hash(tanggalLahir, "sha256")
         print(passwordHash)
         re = insertUser(id, nama.upper(), email.lower(),
                         tanggalLahir, kategori, passwordHash)
         print(re)
         if re['status'] == 'T':
-            flash('anggota perpustakaan '+nama +' berhasil ditambah ', 'success')
+            flash('anggota perpustakaan '+nama +
+                  ' berhasil ditambah ', 'success')
 
             return redirect(url_for('pageAnggotaPerpustakaan'))
         else:
-            flash('anggota perpustakaan gagal ditambahakan nisn/email duplikat ', 'danger')
+            flash(
+                'anggota perpustakaan gagal ditambahakan nisn/email duplikat ', 'danger')
             #     # flash('Registration failed', 'danger')
             #     # return "Registration gagal, danger"
             return redirect(url_for('pageAnggotaPerpustakaan'))
@@ -84,10 +90,7 @@ def logout():
     session.pop('loggedin', None)
     session.pop('admin', None)
     session.pop('id', None)
-    # session.pop('nama', None)
-    # session.pop('email', None)
-
-    # session.pop('flag', None)  # 0 = admin | 1 = user
+    session.pop('user', None)
     return redirect(url_for('login'))
 
 
@@ -95,8 +98,23 @@ def adminLoginRequired(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         print('loggedin' not in session)
-        if 'loggedin' not in session and 'admin' not in session:
+        print('admin' not in session)
+        print('loggedin' not in session and 'admin' not in session)
+        if 'loggedin' in session and 'admin' in session:
             # return "anda harus login terlebih dahulu"
-            return redirect(url_for('login'))
-        return f(*args, **kwargs)
+            return f(*args, **kwargs)
+        return redirect(url_for('login'))
+    return decorated_function
+
+
+def usersLoginRequired(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        print('loggedin' not in session)
+        print('user' not in session)
+        print('loggedin' not in session and 'user' not in session)
+        if 'loggedin' in session and 'user' in session:
+            # return "anda harus login terlebih dahulu"
+            return f(*args, **kwargs)
+        return redirect(url_for('login'))
     return decorated_function

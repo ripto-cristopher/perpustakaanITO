@@ -1,30 +1,24 @@
-			# select
-            #     b.id, p.nama as penerbit , p2.nama as pengarang, k.nama as kategori, b.nama, tahunterbit, (select count(*)  from buku s where  idJudulbuku = b.id and s.status = 'tersedia' ) as jumlahbukutersedia, (select count(*)  from buku s where  idJudulbuku = b.id) as jumlahBuku
-            # from 
-            #     judulbuku  b
-            # left join penerbit p
-            #     on b.idpenerbit  = p.id
-            # left join pengarang p2  
-            #     on b.idpengarang = p2.id
-            # left join kategori k    
-            #     on b.idkategori = k.id ;
-
 from settings.queryFile import QueryStringDb
 
 
-# def getAllJudulBukuAvaliable():
-#     customQuery = QueryStringDb()
-#     query = '''         
-# 			select
-#                 b.id, p.nama as penerbit , p2.nama as pengarang, k.nama as kategori, b.nama, tahunterbit, (select count(*)  from buku s where  idJudulbuku = b.id and s.status = 'tersedia' ) as jumlahbukutersedia, (select count(*)  from buku s where  idJudulbuku = b.id) as jumlahBuku
-#             from 
-#                 judulbuku  b
-#             left join penerbit p
-#                 on b.idpenerbit  = p.id
-#             left join pengarang p2  
-#                 on b.idpengarang = p2.id
-#             left join kategori k    
-#                 on b.idkategori = k.id ;
-#             '''
-#     kondisi = {}
-#     return customQuery.select(query, kondisi)
+def getPeminjamanUser(id):
+    customQuery = QueryStringDb()
+    query = '''         
+			select 
+                idbuku as idbuku, j.nama as namabuku, a.id as nisanggota, a.nama as namaanggota, p.tanggalpeminjaman, p.bataspengembalian, p.bataspengembalian <= p.tanggalpeminjaman as statusDenda, p.bataspengembalian - p.tanggalpeminjaman as massapeminjamansebelumbataspengembalian
+            from 
+                peminjaman p 
+            left join buku b 
+                on p.idbuku = b.id 
+            left join judulbuku j 
+                on b.idjudulbuku  = j.id 	
+            left join anggotaperpustakaan a 
+                on p.idanggotaperpustakaan = a.id
+            where 
+                idanggotaperpustakaan =  %(id)s
+                and flag = 1
+            '''
+    kondisi = {
+        'id': id
+    }
+    return customQuery.select(query, kondisi)
