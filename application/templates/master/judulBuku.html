@@ -89,22 +89,22 @@
                         <td style="width: 7%">{{ dt['tahunterbit'] }}</td>
                         <td style="width: 4%">{{ dt['jumlahbuku'] }}</td>
                         <td style="width: 20%">
-                            <form action="{{ url_for('PageBuku', id = dt['id'] ) }} ">
-                                <button type="button" class="btn btn-outline-primary m-2" data-bs-toggle="modal"
-                                    data-bs-target="#largeModal" id="button-{{dt['id']}}" name="{{ dt['nama'] }}"
-                                    onclick="tambahBuku( {{ dt['id'] }} )">
-                                    Buku Masuk
-                                </button>
-                            </form>
-                            <button type="submit" class="btn btn-outline-info m-2">
-                                Detail Buku
+                            <button type="submit" class="btn btn-outline-primary m-2" data-bs-toggle="modal"
+                                data-bs-target="#largeModal" id="button-{{dt['id']}}" name="{{ dt['nama'] }}"
+                                onclick="tambahBuku( {{ dt['id'] }} )">
+                                Buku Masuk
                             </button>
-                            <form id="form_get_detail_buku" value="{{ dt['id'] }}">
-                                <button type="submit" class="btn btn-outline-warning m-2" data-bs-toggle="modal"
-                                    data-bs-target="#modal_updata_judul_buku" id="button_edit" >
-                                    EDIT
+                            <form action="{{ url_for('PageBuku', id = dt['id'] ) }} ">
+
+                                <button type="submit" class="btn btn-outline-info m-2">
+                                    Detail Buku
                                 </button>
                             </form>
+                            <button type="submit" class="btn btn-outline-warning m-2 be-{{ dt['id'] }}"
+                                data-bs-toggle="modal" data-id="{{ dt['id'] }}"
+                                data-bs-target="#modal_updata_judul_buku" id="button_edit">
+                                EDIT
+                            </button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -146,17 +146,19 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="" method="post">
+                <form id="form_updata_judul_buku" method="POST">
                     <div class="row my-2">
                         <div class="col-md-3">
                             <label for="input_update_judul_buku" class="form-label fw-bold">Judul Buku</label>
-                            <input type="text" class="form-control" id="input_update_judul_buku" name="input_update_judul_buku" required>
+                            <input type="text" class="form-control" id="input_update_judul_buku"
+                                name="input_update_judul_buku" required>
+                            <input type="hidden" name="input_update_idjudulbuku" id="input_update_idjudulbuku">
                         </div>
                         <div class="col-md-2">
                             <label for="select_update_penerbit" class="form-label fw-bold">Penerbit</label>
                             <select id="select_update_penerbit" name="select_update_penerbit" class="form-control"
                                 style="width: 100%;" placeholder required>
-                                <option value="" disabled selected hidden>Pilih Penerbit...</option>
+                                <!-- <option value="" disabled selected hidden>Pilih Penerbit...</option> -->
                                 {% for dt in all["penerbit"]['result'] %}
                                 <option value="{{ dt['id'] }}"> {{ dt['nama'] }} </option>
                                 {% endfor %}
@@ -166,9 +168,9 @@
                             <label for="select_update_pengarang" class="form-label fw-bold">Pengarang</label>
                             <select id="select_update_pengarang" name="select_update_pengarang" class="form-control"
                                 style="width: 100%;" placeholder required>
-                                <option value="" disabled selected hidden>Pilih Pengarang...</option>
+                                <!-- <option value="" disabled selected hidden>Pilih Pengarang...</option> -->
                                 {% for dt in all["pengarang"]['result'] %}
-                                <option value="{{ dt['id'] }}"> {{ dt['nama'] }} </option>
+                                <option id="{{ dt['id'] }}" value="{{ dt['id'] }}"> {{ dt['nama'] }} </option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -176,124 +178,179 @@
                             <label for="select_update_kategori" class="form-label fw-bold">kategori</label>
                             <select id="select_update_kategori" name="select_update_kategori" class="form-control"
                                 style="width: 100%;" placeholder required>
-                                <option value="" disabled selected hidden>Pilih Kategori ...</option>
+                                <!-- <option value="" disabled selected hidden>Pilih Kategori ...</option> -->
                                 {% for dt in all["kategori"]['result'] %}
                                 <option value="{{ dt['id'] }}"> {{ dt['nama'] }} </option>
                                 {% endfor %}
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label for="judul_buku" class="form-label fw-bold">Tahun Terbit</label>
-                            <input type="text" class="form-control" id="tahunterbit" name="tahunterbit" required>
+                            <label for="update_tahunterbit" class="form-label fw-bold">Tahun Terbit</label>
+                            <input type="text" class="form-control" id="update_tahunterbit" name="update_tahunterbit"
+                                required>
                         </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
             </div>
         </div>
     </div>
-</div>
 
-{% endblock %}
+    {% endblock %}
 
-{% block script %}
-<script>
-    function tambahBuku(id) {
-        i = "#button-" + id
+    {% block script %}
+    <script>
+        function tambahBuku(id) {
+            i = "#button-" + id
 
-        html = ` <h5 class="modal-title fw-bold">` + $(i).attr('name') + ` </h5>`
-        console.log($(i).attr('name'))
-        $('#judulBukuMasuk').html(html);
-        $('#button_save').val(id);
-        a = "/judulBuku/" + id + "/buku"
-        $("#form_tambahBuku").attr("action", a);
+            html = ` <h5 class="modal-title fw-bold">` + $(i).attr('name') + ` </h5>`
+            console.log($(i).attr('name'))
+            $('#judulBukuMasuk').html(html);
+            $('#button_save').val(id);
+            a = "/judulBuku/" + id + "/buku"
+            $("#form_tambahBuku").attr("action", a);
 
-    }
-    $(document).ready(function () {
+        }
+        $(document).ready(function () {
 
-        // start select2 setting        
-        $.fn.select2.defaults.set("theme", "bootstrap4");
-        $('#select_kategori').select2({});
-        $('#select_penerbit').select2({});
-        $('#select_pengarang').select2({});
+            // start select2 setting        
+            $.fn.select2.defaults.set("theme", "bootstrap4");
+            $('#select_kategori').select2({});
+            $('#select_penerbit').select2({});
+            $('#select_pengarang').select2({});
 
-        $('#select_update_kategori').select2({
-            dropdownParent: $('#modal_updata_judul_buku')
-        });
-        $('#select_update_penerbit').select2({
-            dropdownParent: $('#modal_updata_judul_buku')
-        });
-        $('#select_update_pengarang').select2({
-            dropdownParent: $('#modal_updata_judul_buku')
-        });
+            $('#select_update_kategori').select2({
+                dropdownParent: $('#modal_updata_judul_buku')
+            });
+            $('#select_update_penerbit').select2({
+                dropdownParent: $('#modal_updata_judul_buku')
+            });
+            $('#select_update_pengarang').select2({
+                dropdownParent: $('#modal_updata_judul_buku')
+            });
 
-        // end select2 setting 
+            // end select2 setting 
 
-        $("#search").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $("#table_buku tbody tr").filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            $("#search").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#table_buku tbody tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+
+            });
+
+            $('select').change(function () {
+                if ($(this).children('option:first-child').is(':selected')) {
+                    $(this).addClass('placeholder');
+                } else {
+                    $(this).removeClass('placeholder');
+                }
             });
 
         });
 
-        $('select').change(function () {
-            if ($(this).children('option:first-child').is(':selected')) {
-                $(this).addClass('placeholder');
-            } else {
-                $(this).removeClass('placeholder');
-            }
-        });
-
-    });
-
-    $('#form_tambah_judul_buku').submit(function (e) {
-        e.preventDefault()
-        $.ajax({
-            type: "GET",
-            url: "{{ url_for ('buku') }}",
-            data: {
-                "id": $('#id_buku').val()
-            },
-            success: function (data) {
-                if (data['status'] == 'F') {
-                } else if (data['result'].length == 0) {
-                    messageAlert(" Buku Tidak Ada Di Daftar, Cek Kembali No Serial Buku ", "warning  ")
-                } else {
+        $('#form_tambah_judul_buku').submit(function (e) {
+            e.preventDefault()
+            $.ajax({
+                type: "GET",
+                url: "{{ url_for ('buku') }}",
+                data: {
+                    "id": $('#id_buku').val()
+                },
+                success: function (data) {
+                    if (data['status'] == 'F') {
+                    } else if (data['result'].length == 0) {
+                        messageAlert(" Buku Tidak Ada Di Daftar, Cek Kembali No Serial Buku ", "warning  ")
+                    } else {
+                    }
                 }
-            }
+            })
+
+            form_tambah_judul_buku.reset()
+        })
+        $('*#button_edit').click(function (e) {
+            e.preventDefault()
+            var id = $(this).data('id')
+            console.log(id)
+            var url = "/judulBuku/" + id
+            console.log(url)
+            $.ajax({
+                type: "GET",
+                url: "/judulBuku/" + id,
+                data: {
+                },
+                success: function (data) {
+                    if (data['status'] == 'F') {
+                    } else if (data['result'].length == 0) {
+                        messageAlert(" Buku Tidak Ada Di Daftar, Cek Kembali No Serial Buku ", "warning  ")
+                    } else {
+                        console.log(data)
+                        $('#input_update_judul_buku').val(data['result'][0]['nama'])
+                        console.log($('#input_update_judul_buku').val())
+
+                        var dom = "#select_update_pengarang option[value='" + data['result'][0]['idpengarang'] + "']"
+                        console.log(dom)
+
+
+
+
+
+                        $("#select_update_penerbit option:selected").removeAttr("selected");
+                        $("#select_update_penerbit option[value='" + data['result'][0]['idpenerbit'] + "']").attr("selected", "selected");
+
+                        $("#select_update_pengarang option:selected").removeAttr("selected");
+                        $("#select_update_pengarang option[value='" + data['result'][0]['idpengarang'] + "']").attr("selected", "selected");
+
+                        $("#select_update_kategori option:selected").removeAttr("selected");
+                        $("#select_update_kategori option[value='" + data['result'][0]['idkategori'] + "']").attr("selected", "selected");
+
+
+                        $('#update_tahunterbit').val(data['result'][0]['tahunterbit'])
+                        $('#input_update_idjudulbuku').val(data['result'][0]['id'])
+
+                        endpoint = "/judulBuku/" + id
+                        $("#form_updata_judul_buku").attr("action", endpoint);
+
+                        console.log($('#input_update_idjudulbuku').val())
+
+                        // id | idpenerbit | idpengarang | idkategori | penerbit | pengarang | kategori | nama | tahunterbit | jumlahbukutersedia | jumlahbuku |
+                        //--+ ----------+ ----------- +----------+ ----------------------+ ------------+ --------+ ----------------------------------------+ ----------- +------------------+ ----------+
+                        //1 | 5 | 3 | 1 | Pastel Books | Pidi Baiq | Novel | Dilan 1990 | 2019 | 1 | 1 |
+                    }
+                }
+            })
+        })
+        $('#select_update_pengarang').change(function (e) {
+            console.log($("#select_update_pengarang").html())
         })
 
-        form_tambah_judul_buku.reset()
-    })
-    $('*#form_get_detail_buku').submit(function (e) {
-        e.preventDefault()
-        var id = $(this).val()
-        console.log (id)
-        var url = "/judulBuku/" + id
-        console.log(url)
-        // $.ajax({
-        //     type: "GET",
-        //     url: "/judulBuku/" + id,
-        //     data: {
-        //     },
-        //     success: function (data) {
-        //         if (data['status'] == 'F') {
-        //         } else if (data['result'].length == 0) {
-        //             messageAlert(" Buku Tidak Ada Di Daftar, Cek Kembali No Serial Buku ", "warning  ")
-        //         } else {
-        //             console.log (data)
-        //             $('#input_update_judul_buku').val(data['result'][0]['nama'])
-        //             console.log ($('#input_update_judul_buku').val())
-        //         }
-        //     }
+        // $('#form_updata_judul_buku').submit(function (e) {
+        //     // e.preventDefault()
+        //     console.log("#select_update_penerbit", $('#select_update_penerbit').val())
+        //     console.log("#select_update_pengarang", $('#select_update_pengarang').val())
+        //     console.log("#select_update_kategori", $('#select_update_kategori').val())
+        //     console.log("#select_update_penerbit", $('#select_update_penerbit').val())
+        //     console.log("#update_tahunterbit", $('#update_tahunterbit').val())
+        //     id = $('#input_update_idjudulbuku').val(),
+
+        //         $.ajax({
+        //             type: "PUT",
+        //             url: "/judulBuku/" + id,
+        //             data: {
+        //                 'idjudlbuku': $('#input_update_idjudulbuku').val(),
+        //                 'idpenerbit': $('#select_update_penerbit').val(),
+        //                 'idpengarang': $('#select_update_pengarang').val(),
+        //                 'idkategori': $('#select_update_kategori').val(),
+        //                 'nama': $('#input_update_judul_buku').val(),
+        //                 'tahunterbit': $('#update_tahunterbit').val(),
+        //             },
+        //         })
         // })
-    })
 
 
-
-    // http://localhost:8089/
-</script>
-{% endblock script %}
+    </script>
+    {% endblock script %}

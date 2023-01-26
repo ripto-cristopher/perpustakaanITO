@@ -23,7 +23,27 @@ def mastersBuku():
 @adminLoginRequired
 def judulBukubyid(id):
     data = getJudulBuku(id)
+    if request.method == 'POST':
+
+        print ("masuk disini")
+
+        idjudlbuku = request.form['input_update_idjudulbuku']
+        nama = request.form['input_update_judul_buku']
+        idpenerbit = request.form['select_update_penerbit']
+        idpengarang = request.form['select_update_pengarang']
+        idkategori = request.form['select_update_kategori']
+        tahunterbit = request.form['update_tahunterbit']
+        respon = updateJudulBuku(idjudlbuku,idpenerbit, idpengarang, idkategori, nama, tahunterbit)
+        print ("respon",respon)
+        if respon['status'] == 'T':
+            flash('buku ' + nama + ' berhasil diupdate ', 'success')
+            print("masuk disini")
+        else:
+            flash('buku ' + nama +
+                  ' Gagal ditambah, silakan hubungi bagian IT [001] ', 'danger')
+        return redirect(url_for('PageJudulBuku'))
     return jsonify(data)
+
 
 @app.route('/judulBuku', methods=['GET', 'POST', 'PUT'])
 @adminLoginRequired

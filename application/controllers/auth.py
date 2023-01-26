@@ -114,7 +114,6 @@ def usersLoginRequired(f):
         print('user' not in session)
         print('loggedin' not in session and 'user' not in session)
         if 'loggedin' in session and 'user' in session:
-            # return "anda harus login terlebih dahulu"
             return f(*args, **kwargs)
         return redirect(url_for('login'))
     return decorated_function

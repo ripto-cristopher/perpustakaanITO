@@ -4,8 +4,11 @@ from settings.queryFile import QueryStringDb
 def getAllJudulBuku():
     customQuery = QueryStringDb()
     query = '''         
-			select 
-                b.id, p.nama as penerbit , p2.nama as pengarang, k.nama as kategori, b.nama, tahunterbit, (select count(*)  from buku s where  idJudulbuku = b.id and s.status = 'tersedia' ) as jumlahbukutersedia, (select count(*)  from buku s where  idJudulbuku = b.id) as jumlahBuku
+            select 
+                b.id, p.id as idpenerbit, p2.id  as idpengarang, k.id as idkategori,
+                p.nama as penerbit , p2.nama as pengarang, k.nama as kategori, b.nama, tahunterbit, 
+                (select count(*)  from buku s where  idJudulbuku = b.id and s.status = 'tersedia' ) as jumlahbukutersedia, 
+                (select count(*)  from buku s where  idJudulbuku = b.id) as jumlahBuku
             from 
                 judulbuku  b
             left join penerbit p
@@ -13,7 +16,8 @@ def getAllJudulBuku():
             left join pengarang p2  
                 on b.idpengarang = p2.id
             left join kategori k    
-                on b.idkategori = k.id ;
+                on b.idkategori = k.id 
+            order by b.id;
             '''
     kondisi = {}
     return customQuery.select(query, kondisi)
@@ -23,7 +27,10 @@ def getJudulBuku(id):
     customQuery = QueryStringDb()
     query = '''         
             select 
-                b.id, p.nama as penerbit , p2.nama as pengarang, k.nama as kategori, b.nama, tahunterbit, (select count(*)  from buku s where  idJudulbuku = b.id) as jumlahBuku
+                b.id, p.id as idpenerbit, p2.id  as idpengarang, k.id as idkategori,
+                p.nama as penerbit , p2.nama as pengarang, k.nama as kategori, b.nama, tahunterbit, 
+                (select count(*)  from buku s where  idJudulbuku = b.id and s.status = 'tersedia' ) as jumlahbukutersedia, 
+                (select count(*)  from buku s where  idJudulbuku = b.id) as jumlahBuku
             from 
                 judulbuku  b
             left join penerbit p
@@ -49,6 +56,32 @@ def insertJudulBuku(idpenerbit, idpengarang, idkategori, nama, tahunterbit):
         values (%(idpenerbit)s, %(idpengarang)s, %(idkategori)s, %(nama)s, %(tahunterbit)s)
             '''
     kondisi = {
+        'idpenerbit': idpenerbit,
+        'idpengarang': idpengarang,
+        'idkategori': idkategori,
+        'nama': nama,
+        'tahunterbit': tahunterbit,
+
+    }
+    return customQuery.execute(query, kondisi)
+
+
+def updateJudulBuku(id ,idpenerbit, idpengarang, idkategori, nama, tahunterbit):
+    customQuery = QueryStringDb()
+    query = '''         
+        UPDATE 
+            judulbuku
+        SET idpenerbit = %(idpenerbit)s,
+            idpengarang =  %(idpengarang)s,
+            idkategori = %(idkategori)s,
+            nama = %(nama)s,
+            tahunterbit = %(tahunterbit)s
+        WHERE 
+            id = %(id)s;
+
+            '''
+    kondisi = {
+        'id':id,
         'idpenerbit': idpenerbit,
         'idpengarang': idpengarang,
         'idkategori': idkategori,
