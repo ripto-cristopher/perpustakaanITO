@@ -1,3 +1,4 @@
+
 -- id diambil dari nisn/nis jika siswa, NUPTK (Nomor Unik Pendidik dan Tenaga Kependidikan) jika staf atau tenaga pengajar, idanggotaperpustakaan berguna juga untuk login
 -- email untuk pengiriman pemberintahuan (dibuat jika memungkinkan)
 -- status = { 'aktif', 'tidak aktif'}, aktif jika anggota perpustakaan masih dalam organisasi, tidak aktif jika telah keluar dari organisasi (lulus, pindah, atau dikeluarkan)
@@ -11,6 +12,7 @@ email VARCHAR ( 50 ) UNIQUE NOT NULL,
 status Varchar (20)  not null DEFAULT 'aktif',
 tanggallahir date not null,
 kategori varchar (20) not null,
+totalDenda int,
 password varchar (100) NOT null 
 )
 
@@ -60,26 +62,41 @@ password varchar (100) NOT NULL
 
 )
 
+
 create table peminjaman (
 id BIGSERIAL  primary key not NULL,
 idbuku BIGINT REFERENCES buku (id),
 idadmin BIGINT REFERENCES admin (id),
-idanggotaperpustakaan bigint REFERENCES anggotaperpustakaan (id),
+iddenda BIGINT REFERENCES denda (id),
+idanggotaperpustakaan BIGINT REFERENCES anggotaperpustakaan (id),
 tanggalpeminjaman date not null default current_date ,
-bataspengembalian date not null default current_date + interval '1 day' * 7,
+bataspengembalian date not null,
 flag int not null default 1
 )
 
 create table pengembalian (
 id BIGSERIAL primary key not NULL,
 idbuku BIGINT REFERENCES Buku (id),
+idpeminjaman BIGINT REFERENCES peminjaman (id),
 idadmin BIGINT REFERENCES admin (id),
 tanggalpengembalian date not null default current_date,
 denda int
 )
 
+create table denda (
+id BIGSERIAL  primary key not NULL,
+lamaPengembalian int, 
+activate boolean default true,
+besardenda int
+)
 
--- hapus table
+create table bayardenda (
+id BIGSERIAL primary key not NULL,
+idanggotaperpustakaan BIGINT REFERENCES anggotaperpustakaan (id),
+idadmin BIGINT REFERENCES admin (id),
+tanggalpembayaran date not null default current_date,
+besarPembayaran int not null
+)
 
 
 drop table anggotaperpustakaan 
@@ -99,3 +116,10 @@ drop table kategori
 drop table penerbit 
 
 drop table pengarang 
+
+drop table denda 
+
+delete from peminjaman 
+
+delete from pengembalian 
+
