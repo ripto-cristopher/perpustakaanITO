@@ -30,8 +30,8 @@
                 </div>
                 <div class="col-md-2">
                     <label for="kategori" class="form-label fw-bold">kategori</label>
-                    <select id="kategori" name="kategori" class="form-control" style="width: 100%;"
-                        placeholder required>
+                    <select id="kategori" name="kategori" class="form-control" style="width: 100%;" placeholder
+                        required>
                         <option value="" disabled selected hidden>Pilih Kategori...</option>
                         <option value="guru">guru</option>
                         <option value="siswa">siswa </option>
@@ -73,7 +73,7 @@
                         <td>{{ dt['nama'] }}</td>
                         <td>{{ dt['email'] }}</td>
                         <td>{{ dt['kategori'] }}</td>
-                        <td>Rp. {{ dt['totaldenda'] }}00</td>
+                        <td>Rp. {{ dt['totaldenda'] if dt['totaldenda'] else 0 }}00</td>
                     </tr>
 
                     {% endfor %}
@@ -90,13 +90,20 @@
 
 {% block script %}
 <script>
-    
+
 
     $(document).ready(function () {
         $.fn.select2.defaults.set("theme", "bootstrap4");
         $('#kategori').select2({});
 
     })
+
+    $("#search").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#table_buku tbody tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
 
 
 </script>

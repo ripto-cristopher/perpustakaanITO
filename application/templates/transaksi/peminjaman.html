@@ -175,13 +175,16 @@
                                                 <h5 class="card-title">Judul Buku : `+ data['result'][0]['namabuku'] + `</h5>
                                                 <input type="hidden" class="id_buku_pinjam" Value="`+ data['result'][0]['id'] + `">
                                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> 
+                                                <div class="row">
+                                                <div class="col-6">
                                                 <p class="card-text"> <span class="fw-bold">no seri         :  </span> `+ data['result'][0]['id'] + ` </p>
-                                                <!-- 
                                                 <p class="card-text"> <span class="fw-bold">kategori        :  </span> `+ data['result'][0]['kategori'] + ` </p>
                                                 <p class="card-text"> <span class="fw-bold">penerbit        :  </span> `+ data['result'][0]['penerbit'] + ` </p>
+                                                </div>
+                                                <div class="col-6">
                                                 <p class="card-text"> <span class="fw-bold">pengarang       :  </span> `+ data['result'][0]['pengarang'] + ` </p>
                                                 <p class="card-text"> <span class="fw-bold">tahunterbit     :  </span> `+ data['result'][0]['tahunterbit'] + ` </p>
-                                                -->                                               
+                                             </div>
                                              </div>
                                         </div>
                                     </div>
@@ -197,28 +200,26 @@
             })
 
             $("#button_save_pinjam_buku").on('click', function (e) {
-                let arrayIdBuku = []
-                console.log("id_anggota", $('#idAnggotaPerpustakaan').val())
-                let domArrayIdBuku = document.querySelectorAll(".id_buku_pinjam");
-                for (var i = 0; i < domArrayIdBuku.length; i++) {
-                    TempData = domArrayIdBuku[i].value
-                    arrayIdBuku.push(TempData)
-                }
+                let selectedIdBuku = Array.from(document.querySelectorAll(".id_buku_pinjam"))
+                    .map(input => input.value);
                 $.ajax({
                     type: "POST",
                     url: "{{ url_for ('TransaksiPinjam') }}",
                     data: {
                         "idAnggota": $('#idAnggotaPerpustakaan').val(),
-                        "idBuku": JSON.stringify(arrayIdBuku)
+                        "idBuku": JSON.stringify(selectedIdBuku)
                     },
                     success: function (data) {
                         console.log(data)
                         $('#modal_berhasil').modal('show');
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error(textStatus, errorThrown);
                     }
                 })
             })
 
-            
+
         }
 
     }) // end document ready

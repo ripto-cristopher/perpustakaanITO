@@ -13,6 +13,21 @@ def getDenda():
     return customQuery.select(query, kondisi)
 
 
+def getDendaById(id):
+    customQuery = QueryStringDb()
+    query = '''         
+            SELECT 
+                id, lamapengembalian, activate, to_char(besardenda, 'FM999G999G999G999G999D99') as besardenda
+            FROM denda d 
+            where 
+                id = %(id)s ;
+            '''
+    kondisi = {
+        "id": id
+    }
+    return customQuery.select(query, kondisi)
+
+
 def getDendaActivate():
     customQuery = QueryStringDb()
     query = '''         
@@ -38,4 +53,22 @@ def insertDenda(lamapengembalian, besardenda):
         "lamapengembalian" : lamapengembalian,
         "besardenda" : besardenda,
     }
+    return customQuery.execute(query, kondisi)
+
+
+def updateStatus(id, activate):
+    customQuery = QueryStringDb()
+    query = '''         
+            UPDATE 
+                denda
+            SET 
+                activate =  %(activate)s 
+            where
+                id = %(id)s 
+            '''
+    kondisi = {
+        "id": id,
+        "activate": activate,
+    }
+
     return customQuery.execute(query, kondisi)

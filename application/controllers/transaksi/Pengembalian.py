@@ -35,7 +35,7 @@ def TransaksiKembali():
     if request.method == 'POST':
         idbuku = request.form['idbuku']
         pengembalian = getpeminjaman(idbuku)['result'][0]
-        batasPengembaian = datetime.date(2023, 2, 13)
+        batasPengembaian = datetime.date(2023, 2, 9)
         totalDenda = getTotalDendaAnggotaPerpustakaan(
             pengembalian['idanggotaperpustakaan'])['result'][0]['totaldenda']
         print("totalDenda \n", totalDenda)

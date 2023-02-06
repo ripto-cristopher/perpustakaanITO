@@ -18,20 +18,20 @@
         <form action="{{ url_for('denda') }}" method="post">
             <div class="row m-2">
 
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label for="biayaDenda " class="form-label fw-bold">Biaya Denda Dalam Rupiah</label>
-                    <input type="int" class="form-control" id="biayaDenda" name="biayaDenda" {% if
-                        data['isdendaActivate'] !=0 %} disabled {% endif %} required>
+                    <input type="int" class="form-control" id="biayaDenda" name="biayaDenda" {% if data['dendaActivate']
+                        !=0 %} disabled {% endif %} required>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label for="batasPeminjam" class="form-label fw-bold">Batas Peminjaman Dalam Hari</label>
                     <input type="int" class="form-control" id="batasPeminjam" name="batasPeminjam" {% if
-                        data['isdendaActivate'] !=0 %} disabled {% endif %} required>
+                        data['dendaActivate'] !=0 %} disabled {% endif %} required>
                 </div>
             </div>
             <div class="row m-2">
                 <div class="col-md-3">
-                    <button type="submit" class="btn btn-primary" {% if data['isdendaActivate'] !=0 %} disabled {% endif
+                    <button type="submit" class="btn btn-primary" {% if data['dendaActivate'] !=0 %} disabled {% endif
                         %}>Tambah Denda</button>
                 </div>
             </div>
@@ -63,9 +63,13 @@
                                 'Tidak Aktif' }}</span>
                         </td>
                         <td style="width: 20%">
-                            <button class="btn btn-danger">NonAktifkan</button>
+                            <button
+                                class="btn {% if dt['activate'] == true %}btn-danger{% else %}btn-success{% endif %}"
+                                id="button_action" value="{{dt['id']}}">
+                                {% if dt['activate'] == true %}NonAktifkan{% else %}Aktifkan{% endif %}
+                            </button>
                         </td>
-
+                        <!-- activate -->
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -78,6 +82,41 @@
 
 {% block script %}
 <script>
+
+    $("*#button_action").on('click', function (e) {
+        var id = $(this).val();
+        console.log(id)
+        $.ajax({
+            type: "POST",
+            url: "{{ url_for ('dendaUpdate') }}",
+            data: {
+                "id_denda": id,
+            },
+            success: function (data) {
+                if (data['status'] == 'T') {
+                    window.location.href = "{{ url_for('pageDenda') }}";
+                    messageAlert(" Denda berhasil DiUpdate ", "success  ")
+
+                } else {
+                    messageAlert(" denda masih yang ada yang aktif, silakan non-aktifkan terlebih dahulu ", "danger  ")
+                }
+            }
+
+        })
+    })
+
+    const inputElement = document.getElementById("biayaDenda");
+    inputElement.addEventListener("input", function (event) {
+        let value = event.target.value;
+
+        // Format mata uang rupiah
+        value = value.replace(/[^,\d]/g, "").toString();
+        value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        value = "Rp. " + value;
+
+        // Set nilai baru pada elemen input
+        event.target.value = value;
+    })
 
 
 </script>

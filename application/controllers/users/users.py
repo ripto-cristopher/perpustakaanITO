@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from application.controllers.auth import usersLoginRequired
 from application.models.master.bukuModels import *
 from application.models.authmodels import *
+from application.models.master.anggotaPerpustakaanModels import *
 from application.models.users.usersHomeModals import *
 
 
@@ -30,7 +31,7 @@ def usersChangePassword():
                 passwordHash = generate_password_hash(new_psw, "sha256")
                 print(passwordHash)
                 re = UpdatePswUsers(session['id'], passwordHash)
-                print (re)
+                print(re)
                 flash('password berhasil diubah', 'success ')
                 return redirect(url_for('usersHome'))
             else:
@@ -44,7 +45,6 @@ def usersChangePassword():
 @usersLoginRequired
 def usersPeminjaman():
 
+    user = getAnggotaPerpustakaan(session['id'])
     data = getPeminjamanUser(session['id'])
-    return render_template("users/userPeminjaman.html", data=data)
-
-
+    return render_template("users/userPeminjaman.html", data=data, user=user)

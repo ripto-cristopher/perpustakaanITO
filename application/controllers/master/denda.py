@@ -5,14 +5,17 @@ from application.models.master.dendaModels import *
 from application.controllers.auth import adminLoginRequired
 from application.controllers.webservis import *
 
+
 @app.route('/master/denda', methods=['GET', 'POST', 'PUT'])
 @adminLoginRequired
 def pageDenda():
 
     data = {
-        "denda" : getDenda(),
+        "denda": getDenda(),
         "dendaActivate": getDendaActivate()['result'][0]['count']
     }
+
+    print("page denda : data", data)
     return render_template("master/denda.html", data=data)
 
 
@@ -21,6 +24,9 @@ def pageDenda():
 def denda():
     biayaDenda = request.form['biayaDenda']
     batasPeminjam = request.form['batasPeminjam']
+    biayaDenda = int(biayaDenda[4:].replace(".", ""))
+    print(biayaDenda, batasPeminjam)
+
     re = insertDenda(batasPeminjam, biayaDenda)
     if re['status'] == 'T':
         flash('denda berhasil disettings', 'success')
@@ -29,4 +35,22 @@ def denda():
     return redirect(url_for('pageDenda'))
 
 
-# {'status_code': 200, 'status': 'T', 'message': 'Sukses', 'result': [{'count': 0}]}
+@app.route('/denda-update/', methods=['post'])
+@adminLoginRequired
+def dendaUpdate():
+    id_denda = request.form['id_denda']
+    statusDenda = getDendaById(id_denda)['result'][0]['activate']
+    statusDenda = not statusDenda
+    isDendaActivate = getDendaActivate()['result'][0]['count']
+    print("isDendaActivate", statusDenda)
+    if isDendaActivate != 0 and statusDenda != False:
+        flash('denda masih yang ada yang aktif, silakan non-aktifkan terlebih dahulu', 'danger')
+        return jsonify({'message': 'Update gagal', 'status': 'F'}), 200
+    else:
+
+        re = updateStatus(id_denda, statusDenda)
+
+        if re['status'] == 'T':
+            return jsonify({'message': 'Update gagal', 'status': 'T'}), 200
+        else:
+            return jsonify({'message': 'Update gagal'}), 400
