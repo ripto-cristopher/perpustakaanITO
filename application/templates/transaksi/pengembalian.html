@@ -42,7 +42,8 @@
                 "idbuku": $('#input_id_buku').val()
             },
             success: function (data) {
-                messageAlert(" Pengembalian berhasil proses ", "success  ")
+                console.log(data)
+                messageAlert(" Pengembalian dengan nama anggota : " + data['namaanggota'] +" dan nama buku " + data['namabuku'] +" berhasil di proses ", "success  ")
                 form_input_id_buku_pengembalian.reset()
              }
         })

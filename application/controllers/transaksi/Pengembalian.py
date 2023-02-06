@@ -35,6 +35,9 @@ def TransaksiKembali():
     if request.method == 'POST':
         idbuku = request.form['idbuku']
         pengembalian = getpeminjaman(idbuku)['result'][0]
+        dataPeminjaman = getDataPeminjaman(idbuku)['result'][0]
+        print (dataPeminjaman)
+
         batasPengembaian = datetime.date(2023, 2, 9)
         totalDenda = getTotalDendaAnggotaPerpustakaan(
             pengembalian['idanggotaperpustakaan'])['result'][0]['totaldenda']
@@ -56,5 +59,5 @@ def TransaksiKembali():
             updateSubBukuStatus(idbuku)
             updatePinjam(idbuku)
 
-        return "berhasil update sub buku status"
+        return jsonify(dataPeminjaman)
     return "method tidak dapat dieksekusi"

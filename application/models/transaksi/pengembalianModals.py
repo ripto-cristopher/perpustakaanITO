@@ -90,3 +90,29 @@ def updateDendaAnggotaPerpustakaan(idAnggotaPerpustakaan, totalDenda):
         'totalDenda': totalDenda
     }
     return customQuery.execute(query, kondisi)
+
+
+def getDataPeminjaman(idBuku):
+    customQuery = QueryStringDb()
+    query = '''         
+        select 
+            a.nama as namaanggota, j.nama as namabuku
+        from 
+            peminjaman p
+        left join denda d 
+        on p.iddenda= d.id
+        left join anggotaperpustakaan a 
+        on p.idanggotaperpustakaan  = a.id 
+        left join buku b   
+        on p.idbuku  = b.id 
+        left join judulbuku j    
+        on b.idjudulbuku  = j.id 
+        where 
+        flag = 1 
+        and idbuku =  %(idBuku)s
+            '''
+    kondisi = {
+        'idBuku': idBuku
+
+    }
+    return customQuery.select(query, kondisi)
