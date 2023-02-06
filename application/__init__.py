@@ -8,6 +8,7 @@ app.secret_key = '5up3r 53cr3t'
 # controller
 from application.controllers.transaksi.Pengembalian import *
 from application.controllers.transaksi.peminjaman import *
+from application.controllers.transaksi.bayarDenda import *
 from application.controllers.master.buku import *
 from application.controllers.master.judulBuku import *
 from application.controllers.master.anggotaPerpustakaan import *

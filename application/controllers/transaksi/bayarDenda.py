@@ -1,45 +1,34 @@
 from application import app
 from flask import jsonify, request, render_template, json
-from application.models.transaksi.peminjamanModal import *
 from application.controllers.auth import adminLoginRequired, session
-from application.controllers.webservis import *
-import datetime
+from application.models.master.anggotaPerpustakaanModels import *
+from application.models.transaksi.pengembalianModals import *
 
 
-@app.route('/transaksi/pinjam')
+@app.route('/transaksi/bayar-denda')
 @adminLoginRequired
-def pagePinjam():
-    isdendaActivate = getDendaActivate()['result'][0]['count']
-    if isdendaActivate == 0:
-        flash('Belum ada Denda yang active silakan tambah denda', 'danger')
-    return render_template("transaksi/peminjaman.html", isdendaActivate=isdendaActivate)
+def pageBayarDenda():
+
+    return render_template("transaksi/bayarDenda.html")
 
 
-@app.route('/TransaksiPinjam', methods=['POST'])
+def convert_to_int(currency_string):
+    return int(currency_string.replace("Rp.", "").replace(".", ""))
+
+
+@app.route('/transaksi-denda', methods=['POST'])
 @adminLoginRequired
-def TransaksiPinjam():
-    idAnggota = request.form['idAnggota']
-    idBuku = json.loads(request.form['idBuku'])
-    denda = getDenda()['result'][0]
-    print(denda['lamapengembalian'])
+def transaksi_denda():
+    id_anggota = request.form['idAnggotaPerpustakaan']
+    nominal_bayar = convert_to_int(request.form['nominalBayar'])
 
-    batasPengembalian = datetime.datetime.now().date(
-    ) + datetime.timedelta(days=denda['lamapengembalian'])
-    results = [insertPeminjaman(n, idAnggota, session['id'], denda['id'], batasPengembalian)
-            for n in idBuku]
-    print(results)
-    status = all([r['status'] == 'T' for r in results])
+    data_anggota = getAnggotaPerpustakaan(id_anggota)
+    total_denda = data_anggota['result'][0]['totaldenda']
+    denda_setelah_bayar = int(total_denda.replace(".", "").replace(",", "")) - nominal_bayar
+    response = updateDendaAnggotaPerpustakaan(
+        id_anggota, denda_setelah_bayar)
 
-    if status:
-        [updateBukuStatus(n) for n in idBuku]
-        return {'status': 'T', 'message': 'Transaksi peminjaman berhasil'}
+    if response['status'] == 'T':
+        return jsonify({'message': 'Pembayaran berhasil'}), 200
     else:
-        return {'status': 'F', 'message': 'Terjadi kesalahan saat melakukan transaksi peminjaman'}
-
-
-    
-
-
-
-
-
+        return jsonify({'message': 'Pembayaran gagal'}), 400

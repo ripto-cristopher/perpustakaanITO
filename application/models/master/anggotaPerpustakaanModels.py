@@ -17,7 +17,9 @@ def getAnggotaPerpustakaan(id):
     customQuery = QueryStringDb()
     query = '''         
             select 
-                id, nama, email, tanggallahir , kategori from anggotaperpustakaan a
+                id, nama, email, tanggallahir , kategori, to_char(totalDenda, 'FM999G999G999G999G999D99') as totalDenda
+            from 
+                anggotaperpustakaan a 
             where
                 id = %(id)s
             '''
@@ -25,3 +27,5 @@ def getAnggotaPerpustakaan(id):
         "id" : id
     }
     return customQuery.select(query, kondisi)
+
+

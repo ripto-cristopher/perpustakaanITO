@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}Transaksi - Bayar Denda {% endblock %}
+{% block masterpagetitle %}Master{% endblock %}
+{% block pagetitle %}Bayar Denda {% endblock %}
+{% block subpagetitle %}<li class="breadcrumb-item active">Bayar Denda </li>{% endblock %}
+{% block content %}
+
+<!-- Table with hoverable rows -->
+<div class="card">
+    <div class="card-header">
+        <div class="row my-2">
+            <div id="head_container_input_id_anggota">
+                <div id="container_input_id_anggota">
+                    <form id="form_input_id_anggota">
+                        <div class="col-md-12">
+                            <label for="input_id_anggota" class="form-label fw-bold">NISN / NIS Anggota
+                                Perpustakaan</label>
+                            <input type="number" class="form-control" id="input_id_anggota" name="input_id_anggota">
+                        </div>
+                        <div class="col-md-3 my-2">
+                            <button type="submit" class="btn btn-primary" id="button_next">Next</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+            <!-- diisi card anggota dan input no serial buku -->
+            <div id="head_book_container" class="m-2"></div>
+        </div>
+    </div>
+
+</div>
+
+<!-- berhasil centered Modal -->
+<div class="modal fade" id="modal_berhasil" tabindex="-1" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info  alert-dismissible fade show" role="alert">
+                    <h4 class="alert-heading text-center">Pembayaran Berhasil Di Proses</h4>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <form action="{{ url_for('pageBayarDenda') }}">
+                    <button type="submit" class="btn btn-primary">Kembali</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div><!-- End Vertically centered Modal-->
+
+
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+        triggger_button_next()
+        function triggger_button_next() {
+            $("#form_input_id_anggota").submit(function (e) {
+                e.preventDefault()
+                $.ajax({
+                    type: "GET",
+                    url: "{{ url_for ('anggotaPerpustakaan') }}",
+                    data: {
+                        "id": $('#input_id_anggota').val()
+                    },
+                    success: function (data) {
+                        if (data['status'] == 'F') {
+                            // messageAlert('W', 'Ada kesalahan di Query Database.');
+                        } else if (data['result'].length == 0) {
+                            messageAlert(" Anggota Perpustakaan Belum mendaftar, Silakan daftar terlebih dahulu ", "warning  ")
+                        } else {
+                            console.log(data)
+                            let html = `
+                                <div id="container_annggota_and_input_id_buku">
+                                    <div id="book_container">
+                                        <div class="card">
+                                            <div class="row g-0">
+                                          
+                                                <div class="col-md-8">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-md-8">
+                                                                <input type="hidden" id="idAnggotaPerpustakaan" Value="`+ data['result'][0]['id'] + `">
+                                                                <h5 class="card-title fw-bold"> `+ (data['result'][0]['nama']).toLocaleUpperCase() + `</h5>
+                                                            </div>
+                                                            <div class="col-md-2 text-right">
+                                                                <form action="{{ url_for('pageBayarDenda') }}">
+                                                                     <button type="submit" class="btn btn-danger m-1" id="button_batal" >Batal</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                        <p class="card-text"> <span class="fw-bold">NISN :  </span> `+ data['result'][0]['id'] + `</p>
+                                                        <p class="card-text"> <span class="fw-bold">Email : </span> `+ data['result'][0]['email'] + `</p>
+                                                        <p class="card-text"> <span class="fw-bold">Kategori : </span> `+ data['result'][0]['kategori'] + `</p>
+                                                        <p class="card-text"> <span class="fw-bold">Total Denda : </span> Rp. `+ data['result'][0]['totaldenda'] + `</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <form id="form_bayar_denda">
+                                            <div class="my-2">
+                                                <label for="input_nominal_bayar" class="form-label fw-bold m-2">Nominal Bayar</label>
+                                                <input type="int" class="form-control" id="input_nominal_bayar" name="input_nominal_bayar" required>
+                                            </div>
+                                            <div class="col-md-3 my-2">
+                                                <button type="submit" class="btn btn-primary" id="button_save_bayar"> Bayar </button>
+                                            </div>
+                                        </form>
+                                      
+                                    </div>
+                                </div>
+                            `
+                            $('#head_book_container').after(html);
+                            $("#container_input_id_anggota").remove();
+
+
+
+                        }
+
+                        const inputElement = document.getElementById("input_nominal_bayar");
+                        inputElement.addEventListener("input", function (event) {
+                            let value = event.target.value;
+
+                            // Format mata uang rupiah
+                            value = value.replace(/[^,\d]/g, "").toString();
+                            value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                            value = "Rp. " + value;
+
+                            // Set nilai baru pada elemen input
+                            event.target.value = value;
+                        });
+                        bayar()
+                    }
+                });
+
+            })
+
+        }
+
+        function bayar () {
+            $("#form_bayar_denda").on('submit', function (e) {
+                e.preventDefault()
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url_for ('transaksi_denda') }}",
+                    data: {
+                        "idAnggotaPerpustakaan": $('#idAnggotaPerpustakaan').val(),
+                        "nominalBayar": $('#input_nominal_bayar').val(),
+                    },
+                    success: function (data) {
+                        console.log(data)
+                        $('#modal_berhasil').modal('show');
+                    }
+                })
+            })
+
+        }
+
+
+
+    }) // end document ready
+
+
+</script>
+{% endblock script %}
