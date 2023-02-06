@@ -4,3 +4,9 @@
 
 - [ ] hapus buku action
 
+
+### error code
+
+[001] = kesalah query dimodals kembalian result['statu'] = 'F'
+
+

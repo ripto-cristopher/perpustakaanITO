@@ -162,7 +162,7 @@ def getBuku(id):  # perlu diedit
     customQuery = QueryStringDb()
     query = '''         
         select 
-            s.id, p.nama as penerbit , p2.nama as pengarang, k.nama as kategori, b.nama as namaBuku, tahunterbit 
+            s.id, p.nama as penerbit , p2.nama as pengarang, k.nama as kategori, b.nama as namaBuku, tahunterbit, s.status
         from 
             buku s
         left join judulbuku b

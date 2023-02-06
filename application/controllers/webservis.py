@@ -25,7 +25,7 @@ def judulBukubyid(id):
     data = getJudulBuku(id)
     if request.method == 'POST':
 
-        print ("masuk disini")
+        print("masuk disini")
 
         idjudlbuku = request.form['input_update_idjudulbuku']
         nama = request.form['input_update_judul_buku']
@@ -33,8 +33,9 @@ def judulBukubyid(id):
         idpengarang = request.form['select_update_pengarang']
         idkategori = request.form['select_update_kategori']
         tahunterbit = request.form['update_tahunterbit']
-        respon = updateJudulBuku(idjudlbuku,idpenerbit, idpengarang, idkategori, nama, tahunterbit)
-        print ("respon",respon)
+        respon = updateJudulBuku(
+            idjudlbuku, idpenerbit, idpengarang, idkategori, nama, tahunterbit)
+        print("respon", respon)
         if respon['status'] == 'T':
             flash('buku ' + nama + ' berhasil diupdate ', 'success')
             print("masuk disini")
@@ -76,15 +77,24 @@ def judulBuku():
 @adminLoginRequired
 def buku():
     id = request.args.get("id")
+    data = {}
     if request.method == 'GET':
-        if id:
-            data = getBuku(id)
-        else:
-            data = getAllBuku()
-        return jsonify(data)
-    if request.method == 'POST':
-        return "under maitenance"
+        data = getBuku(id) if id else getAllBuku()
+    elif request.method == 'POST':
+        return "under maintenance"
     return jsonify(data)
+
+
+@app.route('/TempbukuPinjam', methods=['GET', 'POST', 'PUT'])
+@adminLoginRequired
+def TempbukuPinjam():
+    id = request.args.get("id")
+    data = getBuku(id)
+    print("data", data, data['result'][0]['status'] != 'tersedia')
+    if data['result'][0]['status'] != 'tersedia':
+        return ({'status': 'X'})
+    else :
+        return jsonify(data)
 
 
 @app.route('/AnggotaPerpustakaan', methods=['GET', 'POST', 'PUT'])

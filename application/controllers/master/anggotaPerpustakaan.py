@@ -8,4 +8,5 @@ from application.models.master.anggotaPerpustakaanModels import *
 @adminLoginRequired
 def pageAnggotaPerpustakaan():
     data = getAnggotaPerpustakaans()
+    print (data)
     return render_template("master/anggotaPerpustakaan.html", data=data)

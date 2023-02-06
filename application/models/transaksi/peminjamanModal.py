@@ -1,20 +1,24 @@
 from settings.queryFile import QueryStringDb
 
 
-def insertPeminjaman(idSubBuku, idAnggota, idadmin):
+
+
+def insertPeminjaman(idSubBuku, idAnggota, idadmin, idDenda, bataspengembalian):
     customQuery = QueryStringDb()
-    query = '''         
-        insert into peminjaman (idbuku, idanggotaperpustakaan , idadmin, flag )
-        values (%(idsubBuku)s, %(idAnggota)s, %(idadmin)s, %(flag)s)
+    query = '''  
+        INSERT INTO peminjaman (idbuku, idadmin, iddenda, idanggotaperpustakaan, bataspengembalian, flag)
+        values (%(idsubBuku)s, %(idadmin)s, %(idDenda)s,%(idAnggota)s, %(bataspengembalian)s, %(flag)s)
             '''
     kondisi = {
         'idsubBuku': idSubBuku,
         'idAnggota': idAnggota,
         'idadmin': idadmin,
-        'flag': 1   
+        'idDenda': idDenda,
+        'bataspengembalian': bataspengembalian,
+        'flag': 1
 
     }
-    print (query, kondisi)
+    print(query, kondisi)
     return customQuery.execute(query, kondisi)
 
 
@@ -29,4 +33,30 @@ def updateBukuStatus(id):
         'id': id
     }
     return customQuery.execute(query, kondisi)
+
+
+def getDendaActivate():
+    customQuery = QueryStringDb()
+    query = '''         
+        select 
+            count(*) from denda d
+        where
+            activate = true 
+            '''
+    kondisi = {
+    }
+    return customQuery.select(query, kondisi)
+
+
+def getDenda():
+    customQuery = QueryStringDb()
+    query = '''         
+        select 
+            id, lamapengembalian, activate, besardenda from denda d
+        where
+            activate = true 
+            '''
+    kondisi = {
+    }
+    return customQuery.select(query, kondisi)
 

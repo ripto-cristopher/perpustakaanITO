@@ -16,11 +16,12 @@
                         <div class="col-md-12">
                             <label for="input_id_anggota" class="form-label fw-bold">NISN / NIS Anggota
                                 Perpustakaan</label>
-                            <input type="number" class="form-control" id="input_id_anggota" name="input_id_anggota"
-                                required>
+                            <input type="number" class="form-control" id="input_id_anggota" name="input_id_anggota" {%
+                                if isdendaActivate==0 %} disabled {% endif %} required>
                         </div>
                         <div class="col-md-3 my-2">
-                            <button type="submit" class="btn btn-primary" id="button_next">Next</button>
+                            <button type="submit" class="btn btn-primary" id="button_next" {% if isdendaActivate==0 %}
+                                disabled {% endif %}>Next</button>
                         </div>
                     </form>
 
@@ -153,13 +154,15 @@
                 e.preventDefault()
                 $.ajax({
                     type: "GET",
-                    url: "{{ url_for ('buku') }}",
+                    url: "{{ url_for ('TempbukuPinjam') }}",
                     data: {
                         "id": $('#id_buku').val()
                     },
                     success: function (data) {
                         if (data['status'] == 'F') {
-                            // messageAlert('W', 'Ada kesalahan di Query Database.');
+                            messageAlert('W', 'Ada kesalahan di Query Database.');
+                        } else if (data['status'] == 'X') {
+                            messageAlert(" Buku Telah dipinjam ", "warning  ")
                         } else if (data['result'].length == 0) {
                             messageAlert(" Buku Tidak Ada Di Daftar, Cek Kembali No Serial Buku ", "warning  ")
                         } else {
@@ -214,6 +217,8 @@
                     }
                 })
             })
+
+            
         }
 
     }) // end document ready

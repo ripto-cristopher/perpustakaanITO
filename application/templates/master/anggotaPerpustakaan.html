@@ -59,6 +59,7 @@
                         <th scope="col">Nama</th>
                         <th scope="col">Email</th>
                         <th scope="col">kategori</th>
+                        <th scope="col">total Denda </th>
 
                     </tr>
                     <!-- id, nama, email, tanggallahir , kategori -->
@@ -72,6 +73,7 @@
                         <td>{{ dt['nama'] }}</td>
                         <td>{{ dt['email'] }}</td>
                         <td>{{ dt['kategori'] }}</td>
+                        <td>Rp. {{ dt['totaldenda'] }}</td>
                     </tr>
 
                     {% endfor %}
@@ -99,9 +101,3 @@
 
 </script>
 {% endblock script %}
-
-id = request.form['id']
-nama = request.form['nama']
-email = request.form['email']
-kategori = request.form['kategori']
-tanggalLahir = request.form['tanggalLahir']

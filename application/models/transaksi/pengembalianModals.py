@@ -14,6 +14,7 @@ def insertKembalikan(idBuku, denda, idadmin, idpeminjaman):
         'idpeminjaman': idpeminjaman
 
     }
+    print (query, kondisi)
     return customQuery.execute(query, kondisi)
 
 
@@ -42,19 +43,50 @@ def updatePinjam(idBuku):
     return customQuery.execute(query, kondisi)
 
 
-def getIdpengembalian(idBuku):
+def getpeminjaman(idBuku):
     customQuery = QueryStringDb()
     query = '''         
         select 
-            id 
+            p.id, lamapengembalian, bataspengembalian, besardenda, idanggotaperpustakaan
         from 
-            peminjaman 
+            peminjaman p
+        left join denda d 
+        on p.iddenda= d.id
         where 
-            flag = 1 
-            and idbuku = %(idBuku)s
+        flag = 1 
+        and idbuku = %(idBuku)s
             '''
     kondisi = {
         'idBuku': idBuku
 
     }
     return customQuery.select(query, kondisi)
+
+
+def getTotalDendaAnggotaPerpustakaan(idAnggotaPerpustakaan):
+    customQuery = QueryStringDb()
+    query = '''         
+        select 
+            totaldenda from anggotaperpustakaan a 
+        where 
+            id =  %(idAnggotaPerpustakaan)s
+                    '''
+    kondisi = {
+        'idAnggotaPerpustakaan': idAnggotaPerpustakaan
+    }
+    return customQuery.select(query, kondisi)
+
+
+def updateDendaAnggotaPerpustakaan(idAnggotaPerpustakaan, totalDenda):
+    customQuery = QueryStringDb()
+    query = '''         
+        UPDATE anggotaperpustakaan
+        SET totalDenda = %(totalDenda)s
+        where 
+            id =  %(idAnggotaPerpustakaan)s
+                    '''
+    kondisi = {
+        'idAnggotaPerpustakaan': idAnggotaPerpustakaan,
+        'totalDenda': totalDenda
+    }
+    return customQuery.execute(query, kondisi)

@@ -30,8 +30,6 @@ def login():
                 return redirect(url_for('usersHome'))
             else:
                 flash('wrong password or nisn', 'danger')
-        else:
-            flash('wrong password or nis', 'danger')
     return render_template("login.html")
 
 

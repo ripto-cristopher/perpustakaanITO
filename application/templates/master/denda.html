@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Master - Denda {% endblock %}
+{% block masterpagetitle %}Master{% endblock %}
+{% block pagetitle %} Denda {% endblock %}
+
+{% block content %}
+
+<!-- Table with hoverable rows -->
+<div class="card">
+    <div class="card-header">
+        <div id="container_alert">
+            <div class="alert alert-primary fade show" role="alert">
+                <h4 class="alert-heading">INFORMASI</h4>
+                <p>Pastikan menonaktifkan denda lain jika ingin membuat denda baru</p>
+            </div>
+        </div>
+        <form action="{{ url_for('denda') }}" method="post">
+            <div class="row m-2">
+
+                <div class="col-md-3">
+                    <label for="biayaDenda " class="form-label fw-bold">Biaya Denda Dalam Rupiah</label>
+                    <input type="int" class="form-control" id="biayaDenda" name="biayaDenda" {% if
+                        data['isdendaActivate'] !=0 %} disabled {% endif %} required>
+                </div>
+                <div class="col-md-3">
+                    <label for="batasPeminjam" class="form-label fw-bold">Batas Peminjaman Dalam Hari</label>
+                    <input type="int" class="form-control" id="batasPeminjam" name="batasPeminjam" {% if
+                        data['isdendaActivate'] !=0 %} disabled {% endif %} required>
+                </div>
+            </div>
+            <div class="row m-2">
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary" {% if data['isdendaActivate'] !=0 %} disabled {% endif
+                        %}>Tambah Denda</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="card-body">
+        <h3 class="m-3 fw-bold">Histori Denda</h3>
+        <div class="table-responsive">
+            <table class="table table-hover left " id="table_penerbit">
+                <thead>
+                    <tr>
+                        <th scope="col">no</th>
+                        <th scope="col">Biaya Denda</th>
+                        <th scope="col">Batas Peminjaman </th>
+                        <th scope="col">Status </th>
+                        <th scope="col">Action </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dt in data['denda']['result'] %}
+                    <tr>
+                        <td style="width: 2%">{{dt['id']}}</td>
+                        <td style="width: 20%">Rp. {{dt['besardenda']}}00</td>
+                        <td style="width: 20%">{{dt['lamapengembalian']}} hari</td>
+                        <td style="width: 10%">
+                            <span class="badge {{ 'bg-success' if dt['activate'] else 'bg-secondary' }}">{{ 'Aktif' if
+                                dt['activate'] else
+                                'Tidak Aktif' }}</span>
+                        </td>
+                        <td style="width: 20%">
+                            <button class="btn btn-danger">NonAktifkan</button>
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+
+
+</script>
+{% endblock script %}
