@@ -1,7 +1,7 @@
 from settings.queryFile import QueryStringDb
 
 
-def getHistoryPenyimpanan():
+def getHistoryPengembalian():
     customQuery = QueryStringDb()
     query = '''         
         select idbuku as idbuku, j.nama as namabuku, a.id as nisanggota, a.nama as namaanggota, p.tanggalpeminjaman, p.bataspengembalian, p.flag from peminjaman p 
