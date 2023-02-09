@@ -224,6 +224,22 @@
 
     }) // end document ready
 
+    $("#form_input_id_anggota").submit(function (e) {
+        e.preventDefault()
+        $.ajax({
+            type: "GET",
+            url: "{{ url_for ('anggotaPerpustakaan') }}",
+            data: {
+                "id": $('#input_id_anggota').val()
+            },
+            success: function (data) {
+
+
+
+            }
+        });
+    })
+
 
 </script>
 {% endblock script %}
