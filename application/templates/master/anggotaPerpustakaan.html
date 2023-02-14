@@ -90,8 +90,6 @@
 
 {% block script %}
 <script>
-
-
     $(document).ready(function () {
         $.fn.select2.defaults.set("theme", "bootstrap4");
         $('#kategori').select2({});
@@ -104,7 +102,5 @@
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });
-
-
 </script>
 {% endblock script %}
