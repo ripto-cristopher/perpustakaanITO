@@ -48,7 +48,7 @@ def bukuByJudulBuku(id):
             })
 
         flash('buku berhasil ditambah ', 'success')
-        flash(dict_id, 'info')
+        # flash(dict_id, 'info')
         return redirect(url_for('PageJudulBuku'))
     else:
         return "method tidak dapat dieksekusi"
