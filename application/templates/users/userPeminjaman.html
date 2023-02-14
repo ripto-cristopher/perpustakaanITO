@@ -36,7 +36,7 @@
                         <td style="width: 20%">{{ dt['tanggalpeminjaman'] }}</td>
                         <td style="width: 20%">{{ dt['bataspengembalian'] }}</td>
                         <td style="width: 20%">{{ dt['massapeminjamansebelumbataspengembalian'] }} Hari lagi</td>
-                        
+
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -53,49 +53,17 @@
 <br>
 <br>
 <br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
+
 {% endblock %}
 
 {% block script %}
 <script>
-        $("#search").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $("#table_buku tbody tr").filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-
+    $("#search").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#table_buku tbody tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
 
+    });
 </script>
 {% endblock script %}
