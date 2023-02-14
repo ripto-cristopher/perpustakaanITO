@@ -217,6 +217,25 @@
         }
         $(document).ready(function () {
 
+            $("#search").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                console.log(value)
+                $("#table_buku tbody tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+
+            });
+
+            $('select').change(function () {
+                if ($(this).children('option:first-child').is(':selected')) {
+                    $(this).addClass('placeholder');
+                } else {
+                    $(this).removeClass('placeholder');
+                }
+            });
+
+
+
             // start select2 setting        
             $.fn.select2.defaults.set("theme", "bootstrap4");
             $('#select_kategori').select2({});
@@ -237,6 +256,7 @@
 
             $("#search").on("keyup", function () {
                 var value = $(this).val().toLowerCase();
+                console.log(value)
                 $("#table_buku tbody tr").filter(function () {
                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
                 });
