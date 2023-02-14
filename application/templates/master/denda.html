@@ -82,7 +82,6 @@
 
 {% block script %}
 <script>
-
     $("*#button_action").on('click', function (e) {
         var id = $(this).val();
         console.log(id)
@@ -98,7 +97,9 @@
                     messageAlert(" Denda berhasil DiUpdate ", "success  ")
 
                 } else {
-                    messageAlert(" denda masih yang ada yang aktif, silakan non-aktifkan terlebih dahulu ", "danger  ")
+                    messageAlert(
+                        " denda masih yang ada yang aktif, silakan non-aktifkan terlebih dahulu ",
+                        "danger  ")
                 }
             }
 
@@ -117,7 +118,5 @@
         // Set nilai baru pada elemen input
         event.target.value = value;
     })
-
-
 </script>
 {% endblock script %}
