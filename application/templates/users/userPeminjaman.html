@@ -6,7 +6,7 @@
     <div class="card-header">
         <h3 class="m-3">
 
-            total denda yang belum dibayar : Rp. {{ user['result'][0]['totaldenda'] }}00
+            total denda yang belum dibayar : Rp. {{ user['result'][0]['totaldenda'] if user['result'][0]['totaldenda'] else 0 }}
 
         </h3>
     </div>
