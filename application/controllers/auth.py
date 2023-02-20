@@ -4,32 +4,33 @@ from flask import render_template, url_for, request, redirect, flash, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from application.models.authmodels import *
 
+STATUS_SUCCESS = 'T'
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        id = request.form['id']
+        id_admin = request.form['id']
         password = request.form['password']
-        reAdmin = selectAdmin(id)
-        reUsers = selectUser(id)
-        print(reUsers)
-        if reAdmin['status'] == 'T' and reAdmin['result'] != []:
+
+        reAdmin = selectAdmin(id_admin)
+        if reAdmin['status'] == STATUS_SUCCESS and reAdmin['result']:
             if check_password_hash(reAdmin['result'][0]['password'], password):
                 session['loggedin'] = True
                 session['id'] = reAdmin['result'][0]['id']
                 session['admin'] = True
                 return redirect(url_for('home'))
-                # return "anda berhasil login sebagai admin"
-            else:
-                flash('wrong password or nisn', 'danger')
-        if reUsers['status'] == 'T' and reUsers['result'] != []:
+
+        id_user = request.form['id']
+        reUsers = selectUser(id_user)
+        if reUsers['status'] == STATUS_SUCCESS and reUsers['result']:
             if check_password_hash(reUsers['result'][0]['password'], password):
                 session['loggedin'] = True
                 session['id'] = reUsers['result'][0]['id']
                 session['user'] = True
                 return redirect(url_for('usersHome'))
-            else:
-                flash('wrong password or nisn', 'danger')
+
+        flash('Wrong ID or password', 'danger')
+
     return render_template("login.html")
 
 

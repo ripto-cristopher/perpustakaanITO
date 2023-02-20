@@ -60,22 +60,27 @@
     $(document).ready(function () {
         triggger_button_next()
         function triggger_button_next() {
+            console.log($('#input_id_anggota').val() !== '')
+            console.log($('#input_id_anggota').val())
+
             $("#form_input_id_anggota").submit(function (e) {
                 e.preventDefault()
-                $.ajax({
-                    type: "GET",
-                    url: "{{ url_for ('anggotaPerpustakaan') }}",
-                    data: {
-                        "id": $('#input_id_anggota').val()
-                    },
-                    success: function (data) {
-                        if (data['status'] == 'F') {
-                            // messageAlert('W', 'Ada kesalahan di Query Database.');
-                        } else if (data['result'].length == 0) {
-                            messageAlert(" Anggota Perpustakaan Belum mendaftar, Silakan daftar terlebih dahulu ", "warning  ")
-                        } else {
-                            console.log(data)
-                            let html = `
+                if ($('#input_id_anggota').val() !== '') {
+
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ url_for ('anggotaPerpustakaan') }}",
+                        data: {
+                            "id": $('#input_id_anggota').val()
+                        },
+                        success: function (data) {
+                            if (data['status'] == 'F') {
+                                // messageAlert('W', 'Ada kesalahan di Query Database.');
+                            } else if (data['result'].length == 0) {
+                                messageAlert(" Anggota Perpustakaan Belum mendaftar, Silakan daftar terlebih dahulu ", "warning  ")
+                            } else {
+                                console.log(data)
+                                let html = `
                                 <div id="container_annggota_and_input_id_buku">
                                     <div id="book_container">
                                         <div class="card">
@@ -97,7 +102,7 @@
                                                         <p class="card-text"> <span class="fw-bold">NISN :  </span> `+ data['result'][0]['id'] + `</p>
                                                         <p class="card-text"> <span class="fw-bold">Email : </span> `+ data['result'][0]['email'] + `</p>
                                                         <p class="card-text"> <span class="fw-bold">Kategori : </span> `+ data['result'][0]['kategori'] + `</p>
-                                                        <p class="card-text"> <span class="fw-bold">Total Denda : </span> Rp. `+  (data['result'][0]['totaldenda'] ? data['result'][0]['totaldenda'] : 0)  + `</p>
+                                                        <p class="card-text"> <span class="fw-bold">Total Denda : </span> Rp. `+ (data['result'][0]['totaldenda'] ? data['result'][0]['totaldenda'] : 0) + `</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -116,34 +121,36 @@
                                     </div>
                                 </div>
                             `
-                            $('#head_book_container').after(html);
-                            $("#container_input_id_anggota").remove();
+                                $('#head_book_container').append(html);
+                                $("#container_input_id_anggota").remove();
+                            }
+                            const inputElement = document.getElementById("input_nominal_bayar");
+                            inputElement.addEventListener("input", function (event) {
+                                let value = event.target.value;
 
+                                // Format mata uang rupiah
+                                value = value.replace(/[^,\d]/g, "").toString();
+                                value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                                value = "Rp. " + value;
 
-
+                                // Set nilai baru pada elemen input
+                                event.target.value = value;
+                            });
+                            bayar()
                         }
-
-                        const inputElement = document.getElementById("input_nominal_bayar");
-                        inputElement.addEventListener("input", function (event) {
-                            let value = event.target.value;
-
-                            // Format mata uang rupiah
-                            value = value.replace(/[^,\d]/g, "").toString();
-                            value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-                            value = "Rp. " + value;
-
-                            // Set nilai baru pada elemen input
-                            event.target.value = value;
-                        });
-                        bayar()
-                    }
-                });
-
+                    });
+                } else {
+                    messageAlert(
+                        " silakan isi NISN / NIS Anggota Perpustakaan  ",
+                        "danger  ")
+                };
             })
+
 
         }
 
-        function bayar () {
+        function bayar() {
+            console.log($('#input_id_anggota').val())
             $("#form_bayar_denda").on('submit', function (e) {
                 e.preventDefault()
                 $.ajax({
@@ -159,11 +166,7 @@
                     }
                 })
             })
-
         }
-
-
-
     }) // end document ready
 
 

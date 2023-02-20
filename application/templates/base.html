@@ -255,15 +255,19 @@
 <script>
     function messageAlert(msg, flag) {
         let html = `
-        <div class="alert alert-primary alert-dismissible fade show alert-` + flag + `" role="alert">
-        ` + msg + `
-
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-         </div>
-        `
+    <div class="alert alert-primary alert-dismissible fade show alert-` + flag + `" role="alert">
+      ` + msg + `
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  `;
         $('#container_alert').append(html);
 
-    }
+        // Menutup pesan alert setelah 5 detik
+        setTimeout(function () {
+            console.log("cek")
+            $('.alert-' + flag).alert('close');
+        }, 5000);
+    }       
 </script>
 {% block script %}
 {% endblock script %}
